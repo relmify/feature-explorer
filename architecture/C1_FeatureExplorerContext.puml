@@ -1,0 +1,23 @@
+@startuml Feature_Explorer_System_Context_Diagram
+!include https://raw.githubusercontent.com/adrianvlupu/C4-PlantUML/latest/C4_Context.puml
+!include common.puml
+
+' skinparam linetype ortho
+
+LAYOUT_WITH_LEGEND()
+
+title Feature Explorer System Context Diagram
+
+Person(featureAuthor, "Feature Author", "Product Owner, Product Manager, Business Analyst, Product Designer, Tester, Developer...")
+System(featureExplorer, "Feature Explorer", "Visual Studio Code extension")
+System_Ext(vsCode, "VS Code", "Visual Studio Code source code editor")
+System_Ext(fs, "File System", "The file system that contains your feature files")
+
+Rel(featureAuthor, featureExplorer, "views feature outline, jumps to outline item, and filters outline using")
+Rel(featureAuthor, vsCode, "creates, updates, and deletes feature files and directories using")
+
+Rel(featureExplorer, vsCode, "provides feature explorer view and filtering commands to")
+Rel(featureExplorer, fs, "watches feature files and directories and reads files in")
+Rel(vsCode, fs, "watches files and directories and reads and writes files and directories in")
+
+@enduml

@@ -1,0 +1,64 @@
+@startuml Feature_Explorer_Service_Component_Diagram
+!include https://raw.githubusercontent.com/adrianvlupu/C4-PlantUML/latest/C4_Component.puml
+!include common.puml
+
+LAYOUT_WITH_LEGEND()
+
+title Feature Explorer Service Component Diagram 
+System_Ext(vsCode, "VS Code", "Visual Studio Code sComuce code editor")
+System_Ext(FileSystem, "File System", "The file system that contains the feature files")
+System_Ext(gherkin, "Gherkin file parser", "Cucumber gherkin file parser script")
+
+' Extra-Container Relationships
+Rel(vsCode, FileSystem, "Uses")
+Rel(gherkin, FileSystem, "Reads files from")
+
+Container(FeatureExplorerExtension, "Feature Explorer Extension", "Provides Feature Explorer Functionality")
+
+Container_Boundary(FeatureExplorerServiceContainer, "Feature Explorer Service") {
+  ' Feature Explorer Event-Driven Services
+  Component(FeatureExplorerService, "Feature Explorer Service", "Provides feature explorer functionality")
+  Component(FileWatcher, "File Watcher", "Watches the specified folder for feature file and directory changes")
+  Component(FileParser, "Feature File Parser", "Parses feature files and provides parsed feature data")
+  Component(FeatureValidator, "Feature Validator", "Checks parsed feature data for problems and returns validated feature data")
+  Component(FilteringService, "Filtering Service", "Provides the ability to filter validated features by tags, errors, and warnings")
+
+  ' Inter-Container Relationships
+  Rel(FeatureExplorerExtension, vsCode, "Provides Feature Explorer Functionality To")
+  Rel(FeatureExplorerExtension, FeatureExplorerService, "Uses to execute commands and to get tree view data")
+  Rel(FileWatcher, vsCode, "Uses file watcher from")
+  Rel(FileParser, gherkin, "Parses files with")
+
+  ' Intra-Container Relationships
+  Rel(FileWatcher, FileParser, "Sends 'file contents changed' and 'files added to watch list' events to")
+  Rel(FileWatcher, FeatureExplorerService, "Sends 'file moved', 'files added to watch list', and 'files removed from watch list' events to")
+  Rel(FileWatcher, FilteringService, "Sends 'files added to watch list' and 'files removed from watch list events to")
+
+  Rel(FileParser, FeatureValidator, "Sends 'file parsed' and 'files parsed' events to")
+
+  Rel(FeatureValidator, FeatureExplorerService, "Sends 'feature validated' events to")
+  Rel(FeatureValidator, FilteringService, "Sends 'feature validated' events to")
+
+  Rel(FeatureExplorerService, FileWatcher, "Sends 'watch cancellation requested' and 'new watch requested' events to")
+  Rel(FeatureExplorerService, FilteringService, "Sends 'apply filters requested' and 'clear filters requested' events to")
+
+  Rel(FilteringService, FeatureExplorerService, "Sends 'files filtered out' and 'files filtered in' events to")
+}
+
+note left of FeatureExplorerServiceContainer
+**Note 1**: 
+Internal events are sent 
+and received using an event 
+bus (not shown).
+
+**Note 2**: 
+A watched "file" may be 
+a file, a directory, or a symbolic 
+link to a file or a directory. 
+endnote
+
+' legend bottom left
+' | Internal events are sent and received using an event bus (not shown).|
+' endlegend
+
+@enduml

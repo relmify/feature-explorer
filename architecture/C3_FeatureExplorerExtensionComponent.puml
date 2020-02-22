@@ -1,0 +1,35 @@
+@startuml Feature_Explorer_Extension_Component_Diagram
+!include https://raw.githubusercontent.com/adrianvlupu/C4-PlantUML/latest/C4_Component.puml
+!include common.puml
+
+LAYOUT_WITH_LEGEND()
+
+title Feature Explorer Extension Component Diagram 
+System_Ext(vsCode, "VS Code", "Visual Studio Code sComuce code editor")
+System_Ext(FileSystem, "File System", "The file system that contains the feature files")
+
+' External to External Relationships
+Rel(vsCode, FileSystem, "Uses")
+
+' Non-expanded component
+Container(FeatureExplorerService, "Feature Explorer Service", "Provides feature explorer functionality")
+
+' Expanded component
+Container_Boundary(FeatureExplorerExtensionContainer, "Feature Explorer Extension") {
+  ' Classes Derived from VS Code Classes
+  Component(FeatureExplorerTreeDataProvider, "Feature Explorer Tree Data Provider", "Provides data in a format suitable for displaying in a VS Code tree view")
+  Component(FeatureExplorerCommandProvider, "Feature Explorer Command Provider", "Provides commands that can be called from VS Code")
+  Component(FeatureExplorerExtension, "Feature Explorer Extension", "Provides Feature Explorer functionality")
+
+  ' VS Code to Feature Explorer Relationships
+  Rel(FeatureExplorerExtension, vsCode, "Provides Feature Explorer Functionality to")
+
+  ' Intra-container Relationships
+  Rel(FeatureExplorerExtension, FeatureExplorerTreeDataProvider, "Gets tree data from")
+  Rel(FeatureExplorerExtension, FeatureExplorerCommandProvider, "Executes commands with")
+
+  ' Inter-container Relationships
+  Rel(FeatureExplorerCommandProvider, FeatureExplorerService, "Uses to execute commands")
+  Rel(FeatureExplorerTreeDataProvider, FeatureExplorerService, "Gets tree data from")
+}
+@enduml
