@@ -1,0 +1,81 @@
+{
+    "env": {
+        "es6": true,
+        "node": true,
+        "mocha": true
+    },
+    "extends": [
+        "eslint:recommended",
+        "plugin:@typescript-eslint/eslint-recommended",
+        "plugin:@typescript-eslint/recommended",
+        "plugin:prettier/recommended",
+        "prettier/@typescript-eslint",
+        "plugin:functional/external-recommended",
+        "plugin:functional/recommended",
+        "plugin:jsdoc/recommended"
+    ],
+    "globals": {
+        "Atomics": "readonly",
+        "SharedArrayBuffer": "readonly"
+    },
+    "parser": "@typescript-eslint/parser",
+    "parserOptions": {
+        "ecmaVersion": 2018,
+        "sourceType": "module"
+    },
+    "plugins": [
+        "@typescript-eslint",
+        "prettier",
+        "functional",
+        "jsdoc"
+    ],
+    "rules": {
+        "jsdoc/require-param": "off", // typescript + good naming is often enough
+        "jsdoc/require-param-type" : "off", // typescript makes types visible 
+        "jsdoc/require-returns" : "off", // typescript + good naming is often enough 
+        "jsdoc/require-returns-type": "off", // typescript makes types visible
+        "prettier/prettier": "warn",
+        "@typescript-eslint/class-name-casing": "error",
+        "@typescript-eslint/member-delimiter-style": [
+            "error",
+            {
+                "multiline": {
+                    "delimiter": "semi",
+                    "requireLast": true
+                },
+                "singleline": {
+                    "delimiter": "semi",
+                    "requireLast": false
+                }
+            }
+        ],
+        "@typescript-eslint/semi": [
+            "error",
+            "always"
+        ],
+        "curly": "error",
+        "eqeqeq": [
+            "error",
+            "always"
+        ],
+        "no-throw-literal": "error",
+        "no-unused-expressions": "error"
+    },
+    "overrides": [
+      {
+        "files": ["*test.ts", "**/test/utils/*.ts"],
+        "rules": {
+          "no-unused-expressions": "off",
+          "functional/no-expression-statement": "off",
+          "functional/functional-parameters": "off",
+          "functional/no-let": "off",
+          "functional/no-throw-statement": "off",
+          "functional/prefer-readonly-type": "off",
+          "functional/no-this-expression": "off",
+          "functional/no-return-void": "off",
+          "@typescript-eslint/no-explicit-any": "off",
+          "@typescript-eslint/no-unused-vars": "off"
+        }
+      }
+    ]
+}

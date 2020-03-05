@@ -1,0 +1,63 @@
+@startuml Summarizer_Component_Diagram
+!include https://raw.githubusercontent.com/adrianvlupu/C4-PlantUML/latest/C4_Component.puml
+!include common.puml
+
+LAYOUT_WITH_LEGEND()
+
+title Summarizer Component Diagram 
+
+' External systems
+System_Ext(vsCode, "VS Code", "Visual Studio Code sComuce code editor")
+System_Ext(FileSystem, "File System", "The file system that contains the feature files")
+System_Ext(gherkin, "Gherkin file parser", "Cucumber gherkin file parser script")
+
+' Non-expanded containers
+Container(FeatureExplorerExtension, "Feature Explorer Extension", "Provides Feature Explorer Functionality")
+Container(Filterer, "Filterer", "Filters feature summaries by tags, errors, and warnings")
+
+' External to External Relationships
+Rel(vsCode, FileSystem, "Uses")
+Rel(gherkin, FileSystem, "Reads files from")
+Rel(FeatureExplorerExtension, Filterer, "Filters summary using")
+Rel(FeatureExplorerExtension, vsCode, "Provides Feature Explorer functionality to")
+
+Container_Boundary(SummarizerContainer, "Summarizer") {
+  ' Internal components
+  Component(Summarizer, "Summarizer", "Summarizes feature file content and status")
+  Component(Watcher, "Watcher", "Watches the specified folder for feature file and directory changes")
+  Component(Parser, "Parser", "Parses feature files and provides parsed feature data")
+  Component(Validator, "Validator", "Checks parsed feature data for problems and returns validated feature data")
+
+  ' Internal to External Relationships
+  Rel(FeatureExplorerExtension, Summarizer, "Gets feature file summary from")
+  Rel(Watcher, vsCode, "Uses file watcher from")
+  Rel(Parser, gherkin, "Parses files with")
+
+  ' Intra-Container Relationships
+  Rel(Watcher, Parser, "Sends 'file contents changed' and 'files added to watch list' events to")
+  Rel(Watcher, Summarizer, "Sends 'file moved', 'files added to watch list', and 'files removed from watch list' events to")
+
+  Rel(Parser, Validator, "Sends 'file parsed' and 'files parsed' events to")
+
+  Rel(Validator, Summarizer, "Sends 'feature validated' events to")
+
+  Rel(Summarizer, Watcher, "Sends 'watch cancellation requested' and 'new watch requested' events to")
+}
+
+note top of SummarizerContainer
+**Note 1**: 
+Internal events are sent 
+and received using an event 
+bus (not shown).
+
+**Note 2**: 
+A watched "file" may be 
+a file, a directory, or a symbolic 
+link to a file or a directory. 
+endnote
+
+' legend bottom left
+' | Internal events are sent and received using an event bus (not shown).|
+' endlegend
+
+@enduml

@@ -1,0 +1,29 @@
+@startuml Feature_Explorer_Container_Diagram
+!include https://raw.githubusercontent.com/adrianvlupu/C4-PlantUML/latest/C4_Container.puml
+!include common.puml
+
+LAYOUT_WITH_LEGEND()
+
+title Feature Explorer Container Diagram 
+
+Person(featureAuthor, "Feature Author", "Product Owner, Product Manager, Business Analyst, Product Designer, Tester, Developer...")
+System_Ext(vsCode, "VS Code", "Visual Studio Code source code editor")
+System_Ext(fs, "File System", "The file system that contains your feature files")
+
+System_Boundary(featureExplorer, "Feature Explorer") {
+  Container(featureExplorerExtension, "Feature Explorer Extension", "VS Code Extension")
+  Container(summarizer, "Summarizer", "Node.js")
+  Container(filterer, "Filterer", "Node.js")
+}
+
+Rel(featureAuthor, featureExplorerExtension, "views feature summary, jumps to summary item, and filters summary using")
+Rel(featureAuthor, vsCode, "creates, updates, and deletes feature files and directories using")
+Rel(featureExplorerExtension, vsCode, "provides feature explorer view and commands to", "vscode api")
+
+Rel(featureExplorerExtension, summarizer, "gets feature files summary from")
+Rel(featureExplorerExtension, filterer, "filters feature files summary using")
+
+Rel(summarizer, fs, "watches feature files and directories and reads files in", "node.js")
+Rel(vsCode, fs, "watches files and directories and reads and writes files and directories in", "node.js")
+
+@enduml

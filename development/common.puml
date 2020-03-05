@@ -1,0 +1,13 @@
+@startuml Common_Setup
+' A fully white background color renders as transparent in SVG output
+' Using an off white color instead.
+' See: https://forum.plantuml.net/8356/white-backgrounds-are-rendered-transparent-in-svg
+skinparam BackgroundColor #FEFEFE
+skinparam TitleFontSize 18
+skinparam TitleFontStyle bold
+skinparam TitleFontName arial
+skinparam TitleFontColor #444444
+skinparam NoteBackgroundColor #FFF9C4
+skinparam NoteShadowing false
+skinparam NoteBorderColor #FEFEFE
+@enduml

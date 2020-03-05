@@ -1,0 +1,25 @@
+@startuml Filterer_Component_Diagram
+!include https://raw.githubusercontent.com/adrianvlupu/C4-PlantUML/latest/C4_Component.puml
+!include common.puml
+
+LAYOUT_WITH_LEGEND()
+
+title Filterer Component Diagram 
+
+' External systems
+System_Ext(vsCode, "VS Code", "Visual Studio Code sComuce code editor")
+
+' Non-expanded containers
+Container(FeatureExplorerExtension, "Feature Explorer Extension", "Provides Feature Explorer Functionality")
+Container(Summarizer, "Summarizer", "Summarizes feature file content and status")
+
+' Exernal to External relationships
+Rel(FeatureExplorerExtension, vsCode, "Provides Feature Explorer functionality to")
+Rel(FeatureExplorerExtension, Summarizer, "Gets feature file summary from")
+
+' Expanded Container with visible components
+Container_Boundary(FiltererContainer, "Filterer") {
+  Component(Filterer, "Filterer", "Filters summaries based on the supplied filter criteria")
+}
+
+Rel(FeatureExplorerExtension, Filterer, "Filters summary using")
