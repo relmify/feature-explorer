@@ -1,9 +1,18 @@
 {
-    "files.exclude": {
-        "out": false
-    },
-    "search.exclude": {
-        "out": true
-    },
-    "typescript.tsc.autoDetect": "off"
+  "files.exclude": {
+    "out": false,
+    "docs": false,
+    ".vscode/settings.json": false,
+    "~/Library/Application Support/Code/User/settings.json": false
+  },
+  "search.exclude": {
+    "out": true,
+    "docs": true,
+    "package-lock.json": true,
+    "**/*.svg": true
+  },
+  "typescript.tsc.autoDetect": "on",
+  "editor.tabSize": 2,
+  "jestrunner.jestCommand": "npm run jest --",
+  "prettier.printWidth": 120
 }

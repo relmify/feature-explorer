@@ -1,114 +1,111 @@
 {
-	"name": "feature-explorer",
-	"displayName": "FeatureExplorer",
-	"description": "A tree view for your gherkin features and scenarios",
-	"repository": "https://github.com/relmify/gherkin-explorer",
-	"publisher": "relmify",
-	"license": "MIT",
-	"version": "0.0.1",
-	"engines": {
-		"vscode": "^1.42.0"
-	},
-	"categories": [
-		"Other"
-	],
-	"keywords": [
-		"gherkin",
-		"cucumber",
-		"bdd",
-		"feature",
-		"specflow",
-		"scenario",
-		"behave",
-		"behavior"
-	],
-	"activationEvents": [
-		"onCommand:extension.helloWorld"
-	],
-	"main": "./out/featureExplorExtension/FeatureExplorerExtension.js",
-	"contributes": {
-		"views": {
-			"explorer": [
-				{
-					"id": "featureExplorer",
-					"name": "Feature Explorer"
-				}
-			]
-		},
-		"commands": [
-			{
-				"command": "extension.helloWorld",
-				"title": "Hello World"
-			}
-		]
-	},
-	"typedocOptions": {
-		"inputFiles": [
-			"./src"
-		],
-		"mode": "modules",
-		"out": "docs",
-		"exclude": [
-			"**/src/test/*",
-			"**/*.test.ts"
-		],
-		"excludeNotExported": true
-	},
-	"scripts": {
-		"vscode:prepublish": "npm run compile",
-		"compile": "tsc -p ./",
-		"clean": "rimraf out",
-		"watch": "tsc -watch -p ./",
-		"lint": "eslint src",
-		"docs": "typedoc",
-		"pretest": "npm run compile",
-		"testall": "npm-run-all test:*",
-		"test": "mocha",
-		"test-watch": "mocha",
-		"test:service": "mocha",
-		"test:integration": "node ./out/src/test/integration/runTest.js",
-		"test:feature": "cucumber-js  -p default --format summary",
-		"service-test": "npm-run-all compile test:service",
-		"integration-test": "npm-run-all compile test:integration",
-		"feature-test": "npm-run-all compile test:feature"
-	},
-	"devDependencies": {
-		"@types/chai": "^4.2.9",
-		"@types/glob": "^7.1.1",
-		"@types/mocha": "^5.2.7",
-		"@types/node": "^12.11.7",
-		"@types/sinon-chai": "^3.2.3",
-		"@types/vscode": "^1.42.0",
-		"@typescript-eslint/eslint-plugin": "^2.20.0",
-		"@typescript-eslint/parser": "^2.20.0",
-		"chai": "^4.2.0",
-		"cucumber": "^6.0.5",
-		"cucumber-tsflow": "^3.2.0",
-		"eslint": "^6.8.0",
-		"eslint-config-prettier": "^6.10.0",
-		"eslint-plugin-functional": "^3.0.1",
-		"eslint-plugin-jsdoc": "^21.0.0",
-		"eslint-plugin-prettier": "^3.1.2",
-		"glob": "^7.1.5",
-		"mocha": "^6.2.2",
-		"npm-run-all": "^4.1.5",
-		"prettier": "^1.19.1",
-		"rimraf": "^3.0.2",
-		"ts-node": "^8.6.2",
-		"ts-sinon": "^1.0.25",
-		"typedoc": "^0.16.11",
-		"typedoc-plugin-external-module-name": "^3.0.0",
-		"typescript": "^3.6.4",
-		"vscode-test": "^1.2.2"
-	},
-	"dependencies": {
-		"fast-deep-equal": "^3.1.1",
-		"fp-ts": "^2.5.1",
-		"gherkin": "^9.0.0",
-		"globby": "^11.0.0",
-		"io-ts": "^2.1.2",
-		"io-ts-types": "^0.5.6",
-		"monocle-ts": "^2.1.0",
-		"rxjs": "^6.5.4"
-	}
+  "name": "feature-explorer",
+  "displayName": "FeatureExplorer",
+  "description": "A tree view for your gherkin features and scenarios",
+  "repository": "https://github.com/relmify/gherkin-explorer",
+  "publisher": "relmify",
+  "license": "MIT",
+  "version": "0.0.1",
+  "engines": {
+    "vscode": "^1.42.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "keywords": [
+    "gherkin",
+    "cucumber",
+    "bdd",
+    "feature",
+    "specflow",
+    "scenario",
+    "behave",
+    "behavior"
+  ],
+  "activationEvents": [
+    "onCommand:featureExplorer.refresh",
+    "onView:featureExplorer.view"
+  ],
+  "main": "./out/src/application/vscodeExtension.js",
+  "contributes": {
+    "views": {
+      "explorer": [
+        {
+          "id": "featureExplorer.view",
+          "name": "Feature Explorer"
+        }
+      ]
+    },
+    "commands": [
+      {
+        "command": "featureExplorer.refresh",
+        "title": "Feature Explorer: Refresh",
+        "icon": {
+          "light": "resources/light/refresh.svg",
+          "dark": "resources/dark/refresh.svg"
+        }
+      }
+    ]
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run build",
+    "build": "npm run-all check-lint check-prettier compile testall docs",
+    "compile": "tsc -p ./",
+    "clean": "rimraf out",
+    "watch": "tsc -watch -p ./",
+    "check-lint": "eslint ./src --ext .ts --ext .js",
+    "fix-lint": "eslint ./src --ext .ts --ext .js --fix",
+    "check-prettier": "prettier --check \"{src,jest}/**/*.{ts,js}\"",
+    "docs": "typedoc",
+    "testall": "npm-run-all test:*",
+    "jest": "jest",
+    "jestwatch": "jest --watch",
+    "test": "jest",
+    "test:unit": "jest",
+    "test:integration": "node ./out/src/test/jest/jestTestRunner.js",
+    "test:feature": "cucumber-js  -p default --format summary",
+    "unit-test": "npm-run-all compile test:unit",
+    "integration-test": "npm-run-all compile test:integration",
+    "feature-test": "npm-run-all compile test:feature"
+  },
+  "devDependencies": {
+    "@types/glob": "^7.1.1",
+    "@types/jest": "^25.1.4",
+    "@types/node": "^13.9.0",
+    "@types/ramda": "^0.26.44",
+    "@types/vscode": "^1.42.0",
+    "@typescript-eslint/eslint-plugin": "^2.24.0",
+    "@typescript-eslint/parser": "^2.24.0",
+    "cucumber": "^6.0.5",
+    "cucumber-tsflow": "^3.2.0",
+    "eslint": "^6.8.0",
+    "eslint-config-prettier": "^6.10.0",
+    "eslint-plugin-functional": "^3.0.1",
+    "eslint-plugin-jsdoc": "^22.0.0",
+    "eslint-plugin-prettier": "^3.1.2",
+    "eslint-plugin-unused-imports": "^0.1.2",
+    "glob": "^7.1.6",
+    "jest": "^25.2.7",
+    "jest-extended": "^0.11.5",
+    "jest-watch-toggle-config": "^1.0.2",
+    "marked": "^0.8.2",
+    "npm-run-all": "^4.1.5",
+    "prettier": "^1.19.1",
+    "rimraf": "^3.0.2",
+    "ts-jest": "^25.2.1",
+    "ts-node": "^8.6.2",
+    "typedoc": "^0.16.11",
+    "typedoc-neo-theme": "^1.0.7",
+    "typescript": "^3.8.3",
+    "vscode-test": "^1.3.0"
+  },
+  "dependencies": {
+    "fp-ts": "^2.5.3",
+    "gherkin": "^9.0.0",
+    "globby": "^11.0.0",
+    "io-ts": "^2.1.2",
+    "io-ts-types": "^0.5.6",
+    "monocle-ts": "^2.1.0",
+    "rxjs": "^6.5.4"
+  }
 }

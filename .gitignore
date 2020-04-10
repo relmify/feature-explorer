@@ -3,6 +3,7 @@ temp_*/
 
 # Output files
 out/
+docs/
 
 # Logs
 logs

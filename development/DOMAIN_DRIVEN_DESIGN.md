@@ -18,7 +18,7 @@ In the context of software programs:
 > user. All other features, vital though they may be, support this basic
 > purpose.
 >
-> -- *Eric Evans* - Domain Driven Deesign: Tackling Complexity in the Heart of Softawre
+> &mdash; Eric Evans, _Domain Driven Deesign: Tackling Complexity in the Heart of Softawre_
 
 The overarching domain of the software can be broken down into multiple sub-domains. A sub-domain is still a domain.
 
@@ -55,11 +55,53 @@ Bounded contexts live in the solution space.
 
 If you are familiar with microservices, you can think of a bounded context as (ideally) equivalent to a single microservice.
 
+## Application Services
+
+Application services model busines activities that span bounded contexts.
+
+Application services sit above domain services which sit above aggregates.
+
+Note that application services should never directly interact with domain services. Instead the bounded context can define interfaces which result in calling domain services.
+
+## Services
+
+Bounded contexts present themselves as Services by providing an API to their clients.
+
+## Domain Services
+
+Domain services model business activities within a bounded context.
+
+Domain services are  visible and consumed **only within their own bounded context**. The bounded context might optionally define interfaces that make some or all of its domain services accessible via it's API, but these interfaces may be different from the internal interfaces domain service interfaces.
+
+Domain services sit above the domain aggregates.
+
+## External Services
+
+External services are any services that are external to the bounded context. These could be 3rd party services, or the services provided by other bounded contexts within the same application.
+
+You consume an external services within your bounded context by wrapping it up as if is a domain service.
+
+## Aggregate
+
+Aggregates are concepts made up of entities and value objects.  
+
+Note that ideally you want small aggregates with few entities and value objects. Ideally most aggregates will consist of a single entity.
+
+## Entities
+
+Entities are concepts whose instances are uniquely identifiable. They all have one immutable, read-only aspect or detail that acts as an identifier. We can change any other property but it still remains the same instance.
+
+Entities don't contain other entities but mat express relationships to other entities by ID. 
+
+## Value Objexts
+
+Value objects are concepts that do not have a unique identity. The identity of a value object is determined by all of the values it contains - not by an identifier. For example, a person would be an entity and that person's name would be a value object. If that person changes their name they are still the same person - but they have a new name. 
+
 ## Domain Model
 
 > A model is a selectively simplified and consciously structured form of knowledge. An appropriate model makes sense of information and focuses it on a problem.
 >
-> -- *Eric Evans*
+> -- _Eric Evans_
 
 ### Domain Modelling
 
