@@ -75,8 +75,8 @@
       }
     },
     {
-      // Relax rules for javascript files and scripts
-      "files": ["**/*.js", "**/scripts/*.ts"],
+      // Relax rules for javascript files, scripts, and steps files
+      "files": ["**/*.js", "**/scripts/*.ts", "**/*.steps.ts"],
       "rules": {
         "no-unused-vars": "off",
         "no-unused-expressions": "off",
