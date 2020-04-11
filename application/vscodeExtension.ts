@@ -1,8 +1,8 @@
 import * as vscode from 'vscode';
 // import { getConfiguration } from './getConfiguration';
-import { FeatureItem } from '../presentation/featureTreeDataProvider/FeatureItem';
-import { createFeatureTree } from '../presentation/featureTreeDataProvider/FeatureTree';
-import { FeatureTreeDataProvider } from '../presentation/featureTreeDataProvider/FeatureTreeDataProvider';
+import { FeatureItem } from './presentation/featureTreeDataProvider/FeatureItem';
+import { createFeatureTree } from './presentation/featureTreeDataProvider/FeatureTree';
+import { FeatureTreeDataProvider } from './presentation/featureTreeDataProvider/FeatureTreeDataProvider';
 
 /* eslint-disable functional/no-return-void */
 /* eslint-disable functional/functional-parameters */

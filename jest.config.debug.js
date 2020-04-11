@@ -2,6 +2,6 @@
 module.exports = {
   preset: 'ts-jest',
   testEnvironment: 'node',
-  testPathIgnorePatterns: ['/src/test/integration/', '/node_modules/', '/out/'],
+  testPathIgnorePatterns: ['/application/test/integration/', '/node_modules/', '/out/'],
   setupFilesAfterEnv: ['./jest.setup.js'],
 };

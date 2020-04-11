@@ -8,18 +8,18 @@ import * as path from 'path';
 const rootDir = path.resolve(__dirname, '../../');
 
 const fromRoot = (...subPaths: readonly string[]): string => path.resolve(rootDir, ...subPaths);
-// const srcRoot = fromRoot('src');
+// const srcRoot = fromRoot('application');
 
 const jestConfig = {
   rootDir: rootDir,
-  roots: ['<rootDir>/src'],
+  roots: ['<rootDir>/application'],
   verbose: true,
   colors: true,
   transform: JSON.stringify({ '^.+\\.ts$': 'ts-jest' }),
   runInBand: true, // Required due to the way the "vscode" module is injected.
   testRegex: '\\.(test|spec)\\.ts$',
-  testEnvironment: fromRoot('out/test/jest/jestVscodeEnvironment.js'),
-  setupTestFrameworkScriptFile: fromRoot('out/test/jest/jestVscodeFrameworkSetup.js'),
+  testEnvironment: fromRoot('out/application/test/integration/jestVscodeEnvironment.js'),
+  setupTestFrameworkScriptFile: fromRoot('out/application/test/integration/jestVscodeFrameworkSetup.js'),
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json', 'node'],
   globals: JSON.stringify({
     'ts-jest': {
