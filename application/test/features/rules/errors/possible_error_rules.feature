@@ -3,7 +3,7 @@ Feature: Possible Error Rules
   All of these rules are set to 'warn' by default.
 
   Background:
-    Given the following convention violation rules:
+    Given the following potential error rules:
       | Rule                      | Properties |
       | noThenInBackground        | -          |
       | onlyOneWhenPerScenario    | -          |
