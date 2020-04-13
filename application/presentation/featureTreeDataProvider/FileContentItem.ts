@@ -6,7 +6,7 @@ import * as t from 'io-ts';
 import { Either } from 'fp-ts/lib/Either';
 import { Lens } from 'Monocle-ts';
 import { FileContentItemTypes, ItemType, ItemTypeBrand } from './ItemType';
-import { ItemId, ItemName, ItemDescription, ItemParent, ItemData } from './Item';
+import { ItemId, ItemName, ItemDescription, ItemParent } from './Item';
 import { ContentLocation } from './ContentLocation';
 import { NonNegativeInteger } from '../../common/types';
 
@@ -41,16 +41,9 @@ const FileContentItem = t.readonly(
 );
 type FileContentItem = t.TypeOf<typeof FileContentItem>;
 export { FileContentItem };
+export type FileContentItemDTO = ReturnType<typeof FileContentItem.encode>;
 
-export type FileContentItemData = ItemData & {
-  readonly contentIndex: number;
-  readonly contentLocation: {
-    readonly line: number;
-    readonly column: number;
-  };
-};
-
-export const createFileContentItem = (data: FileContentItemData): Either<t.Errors, FileContentItem> => {
+export const createFileContentItem = (data: FileContentItemDTO): Either<t.Errors, FileContentItem> => {
   return FileContentItem.decode(data);
 };
 

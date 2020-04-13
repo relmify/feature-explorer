@@ -2,13 +2,12 @@
  * An event bus for publishing and subscribing to events
  * @packageDocumentation
  */
-
 import { Subject } from 'rxjs';
-import { filter, map } from 'rxjs/operators';
-import { Event, EventName, EventData } from './event';
+import { filter } from 'rxjs/operators';
 import { createEventRegistry, EventRegistry } from './eventRegistry';
+import { Event, EventHandler, EventSubscription } from './eventTypes';
 
-/* eslint-disable functional/no-return-void, functional/functional-parameters */
+/* eslint-disable functional/no-return-void, functional/functional-parameters, functional/no-expression-statement */
 
 /** An EventBus allows you to publish and subdscribe to events */
 export type EventBus = {
@@ -16,17 +15,8 @@ export type EventBus = {
   readonly registry: EventRegistry;
 };
 
-/** An EventHandler is a function that gets called when an event that you subscribe to arrives */
-export type EventHandler = (eventData: EventData) => void;
-
-/** An EventSubscription is returned when you subscribe to an event */
-export type EventSubscription = {
-  /** Call susbsription.unsubscribe() to unsubscribe */
-  readonly unsubscribe: () => void;
-};
-
 /** Create a new EventBus */
-export const createEventBus = (eventNames: ReadonlyArray<string> = []): EventBus => {
+export const createEventBus = (eventNames: readonly string[]): EventBus => {
   return {
     subject: new Subject(),
     registry: createEventRegistry(eventNames),
@@ -36,15 +26,31 @@ export const createEventBus = (eventNames: ReadonlyArray<string> = []): EventBus
 /** Publish an Event to all subscribers */
 export const publishEvent = (eventBus: EventBus) => (event: Event): void => eventBus.subject.next(event);
 
+export type EventSubscribeFunction = (eventName: string, handlers: readonly EventHandler[]) => EventSubscription;
+
 /** Subscribe to an event */
-export const subscribeToEvent = (eventBus: EventBus) => (
-  eventName: EventName,
-  handler: EventHandler,
+export const subscribeToEvent = (eventBus: EventBus): EventSubscribeFunction => (
+  eventName: string,
+  handlers: readonly EventHandler[],
 ): EventSubscription => {
+  const handleAndPublishResults = (event: unknown): void => {
+    const returnedEvents = handlers.flatMap(handler => handler(event as Event));
+    returnedEvents.map(returnedEvent => publishEvent(eventBus)(returnedEvent));
+  };
   return eventBus.subject
-    .pipe(
-      filter((event: unknown) => Event.is(event) && event.name === eventName),
-      map((event: unknown) => (event as Event)['data']),
-    )
-    .subscribe(handler as (value: unknown) => void);
+    .pipe(filter((event: unknown) => Event.is(event) && event.name === eventName))
+    .subscribe(handleAndPublishResults);
 };
+
+// export const subscribeToEvent = (eventBus: EventBus) => (
+//   eventName: EventName,
+//   handler: readonly EventHandler,
+// ): EventSubscription => {
+//   const handleAndPublishResults = (event: unknown): void => {
+//     const returnedEvents = handler(event as Event);
+//     returnedEvents.map(returnedEvent => publishEvent(eventBus)(returnedEvent));
+//   };
+//   return eventBus.subject
+//     .pipe(filter((event: unknown) => Event.is(event) && event.name === eventName))
+//     .subscribe(handleAndPublishResults);
+// };

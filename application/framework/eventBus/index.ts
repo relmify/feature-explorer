@@ -1,2 +1,1 @@
-export * from './event';
-export * from './eventBus';
+export { Event, EventHandler, GetHandlersFunction, EventSubscription } from './eventTypes';

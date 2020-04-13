@@ -17,7 +17,7 @@ import * as t from 'io-ts';
 // type String = t.TypeOf<typeof String>;
 // export { String };
 
-type NonEmptyStringBrand = { readonly NonEmptyString: unique symbol };
+export type NonEmptyStringBrand = { readonly NonEmptyString: unique symbol };
 /**
  * NonEmptyString
  *

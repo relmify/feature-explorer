@@ -1,10 +1,10 @@
-import { Event, EventData } from '../event';
+import { Event, EventData } from '../eventTypes';
 
 describe('EventData.is()', () => {
   test('should be true for arbitrary unknown data', () => {
     expect(EventData.is('some data')).toBe(true);
   });
-  test('should be true for undefined values', () => {
+  test('should be true for undefined data', () => {
     expect(EventData.is(undefined)).toBe(true);
   });
 });
@@ -16,8 +16,8 @@ describe('Event.is()', () => {
   test('should be true if the data value is undefined', () => {
     expect(Event.is({ name: 'my event', data: undefined })).toBe(true);
   });
-  test('should be true if a data property is not provided', () => {
-    expect(Event.is({ name: 'my event' })).toBe(true);
+  test('should be false if a data property is not provided', () => {
+    expect(Event.is({ name: 'my event' })).toBe(false);
   });
   test('should be false if name is an empty string', () => {
     expect(Event.is({ name: '', data: '' })).toBe(false);

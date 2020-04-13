@@ -1,7 +1,7 @@
-import { FileItemPath, FileItemType, FileItem, FileItemData, createFileItem } from '../FileItem';
+import { FileItemPath, FileItemType, FileItem, FileItemDTO, createFileItem } from '../FileItem';
 import { FileItemTypes, FileContentItemTypes } from '../ItemType';
 
-const validData: FileItemData = {
+const validData: FileItemDTO = {
   itemId: '1',
   itemType: 'FEATURE_FILE',
   itemName: 'add_to_cart.feature',
@@ -11,7 +11,7 @@ const validData: FileItemData = {
   fileItemPath: '/feature/add_to_cart.feature',
 };
 
-const invalidData: FileItemData = {
+const invalidData: FileItemDTO = {
   itemId: '',
   itemType: 'FEATURE_FILE',
   itemName: 'add_to_cart.feature',

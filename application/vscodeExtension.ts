@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-// import { getConfiguration } from './getConfiguration';
+import { configureApplication } from './configuration/configureApplication';
 import { FeatureItem } from './presentation/featureTreeDataProvider/FeatureItem';
 import { createFeatureTree } from './presentation/featureTreeDataProvider/FeatureTree';
 import { FeatureTreeDataProvider } from './presentation/featureTreeDataProvider/FeatureTreeDataProvider';
@@ -22,8 +22,7 @@ const getWorkspaceRoot = (): string => {
 export function activate(context: vscode.ExtensionContext): void {
   console.log('The "feature-explorer" extension has been activated');
 
-  // TODO: will need the eventBus once commands and events are in place...
-  // const applicationConfiguration = getConfiguration();
+  configureApplication();
   const workspaceRoot = getWorkspaceRoot();
   const featureTree = createFeatureTree(workspaceRoot);
   const featureTreeDataProvider = new FeatureTreeDataProvider(

@@ -1,10 +1,10 @@
-import { FileContentItemType, FileContentItem, FileContentItemData, createFileContentItem } from '../FileContentItem';
+import { FileContentItemType, FileContentItem, FileContentItemDTO, createFileContentItem } from '../FileContentItem';
 // import { ItemId } from '../Item';
 // import { FileItemTypes, FileContentItemTypes } from '../ItemType';
 // import { AbsoluteLocation, RelativeLocation, ColumnNumber, LineNumber } from '../ItemLocation';
 import { FileItemTypes, FileContentItemTypes } from '../index';
 
-const validData: FileContentItemData = {
+const validData: FileContentItemDTO = {
   itemId: '1',
   itemType: 'FEATURE',
   itemName: 'Feature',
@@ -17,7 +17,7 @@ const validData: FileContentItemData = {
   },
 };
 
-const invalidData: FileContentItemData = {
+const invalidData: FileContentItemDTO = {
   itemId: '',
   itemType: 'FEATURE',
   itemName: 'Feature',

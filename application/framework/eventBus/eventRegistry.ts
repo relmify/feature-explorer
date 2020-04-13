@@ -17,3 +17,7 @@ export const registerEvents = (eventRegistry: EventRegistry, eventNames: Readonl
 export const isRegisteredEvent = (eventRegistry: EventRegistry, name: string): boolean => {
   return eventRegistry.getValue().includes(name);
 };
+
+export const getRegisteredEventNames = (eventRegistry: EventRegistry): readonly string[] => {
+  return eventRegistry.getValue();
+};

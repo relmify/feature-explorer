@@ -16,7 +16,7 @@ import * as t from 'io-ts';
 // type Number = t.TypeOf<typeof Number>;
 // export { Number };
 
-type PositiveNumberBrand = { readonly PositiveNumber: unique symbol };
+export type PositiveNumberBrand = { readonly PositiveNumber: unique symbol };
 /**
  * Numbers >= 0
  *
@@ -30,7 +30,7 @@ const PositiveNumber = t.brand(
 type PositiveNumber = t.TypeOf<typeof PositiveNumber>;
 export { PositiveNumber };
 
-type NonNegativeNumberBrand = { readonly NonNegativeNumber: unique symbol };
+export type NonNegativeNumberBrand = { readonly NonNegativeNumber: unique symbol };
 /**
  * Numbers >= 0
  * @category Codec
@@ -43,7 +43,7 @@ const NonNegativeNumber = t.brand(
 type NonNegativeNumber = t.TypeOf<typeof NonNegativeNumber>;
 export { NonNegativeNumber };
 
-type NegativeNumberBrand = { readonly NegativeNumber: unique symbol };
+export type NegativeNumberBrand = { readonly NegativeNumber: unique symbol };
 /**
  * Numbers < 0
  * @category Codec

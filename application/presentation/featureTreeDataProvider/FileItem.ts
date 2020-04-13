@@ -6,7 +6,7 @@ import * as t from 'io-ts';
 import { Either } from 'fp-ts/lib/Either';
 import { NonEmptyString } from '../../common/types';
 import { Lens } from 'Monocle-ts';
-import { ItemId, ItemName, ItemDescription, ItemParent, ItemData } from './Item';
+import { ItemId, ItemName, ItemDescription, ItemParent } from './Item';
 import { FileItemTypes } from './ItemType';
 
 /** FileItemPath -- Represents the file system path of the file item */
@@ -48,14 +48,10 @@ const FileItem = t.readonly(
   'FileItem',
 );
 type FileItem = t.TypeOf<typeof FileItem>;
-
-export type FileItemData = ItemData & {
-  readonly fileItemId: string;
-  readonly fileItemPath: string;
-};
 export { FileItem };
+export type FileItemDTO = ReturnType<typeof FileItem.encode>;
 
-export const createFileItem = (fileItemData: FileItemData): Either<t.Errors, FileItem> => {
+export const createFileItem = (fileItemData: FileItemDTO): Either<t.Errors, FileItem> => {
   return FileItem.decode(fileItemData);
 };
 

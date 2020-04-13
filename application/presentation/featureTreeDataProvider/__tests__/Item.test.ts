@@ -1,7 +1,7 @@
 import { PathReporter } from 'io-ts/lib/PathReporter';
-import { Item } from '../Item';
+import { Item, ItemDTO } from '../Item';
 
-const validItem = {
+const validItem: ItemDTO = {
   itemId: '1',
   itemType: 'FEATURE',
   itemName: 'Add to cart',
@@ -9,7 +9,7 @@ const validItem = {
   itemParent: '6',
 };
 
-const badItemTypeItem = {
+const badItemTypeItem: ItemDTO = {
   itemId: '1',
   itemType: 'Not a valid ItemType',
   itemName: 'Add to cart',

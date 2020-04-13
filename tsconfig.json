@@ -8,7 +8,7 @@
     "sourceMap": true,
     "preserveConstEnums": true,
     "outDir": "out",
-    "lib": ["es6"],
+    "lib": ["es2019"],
     "strict": true,
     "removeComments": false,
     "noImplicitAny": true,
@@ -19,6 +19,7 @@
     "esModuleInterop": true
   },
   "include": ["application", "jest"],
+  "exclude": ["**/__mocks__/*"],
   "typedocOptions": {
     "inputFiles": ["./application"],
     "files": ["./application"],

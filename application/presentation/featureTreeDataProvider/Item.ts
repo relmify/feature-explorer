@@ -40,7 +40,7 @@ const Item = t.readonly(
 type Item = t.TypeOf<typeof Item>;
 export { Item };
 
-export type ItemData = {
+export type ItemDTO = {
   readonly itemId: string;
   readonly itemType: string;
   readonly itemName: string;

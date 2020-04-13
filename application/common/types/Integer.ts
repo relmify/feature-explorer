@@ -8,7 +8,7 @@ import * as t from 'io-ts';
 
 import { PositiveNumber, NonNegativeNumber, NegativeNumber } from './Number';
 
-type IntegerBrand = { readonly Integer: unique symbol };
+export type IntegerBrand = { readonly Integer: unique symbol };
 /**
  * Integer
  *
