@@ -1,7 +1,7 @@
-import { createEventBus, EventBus, subscribeToEvent } from '../framework/eventBus/eventBus';
-import { getRegisteredEventNames } from '../framework/eventBus/eventRegistry';
-import { getWatcherEvents, getWatcherEventHandlersFromName } from '../domain/summarizingService/watcher';
-import { GetHandlersFunction } from '../framework/eventBus';
+import { GetHandlersFunction, EventBus } from '../framework/eventBus';
+import { createEventBus, subscribeToEvent, getRegisteredEventNames } from '../framework/eventBus/api';
+import { getEventNames as watcherGetEventNames } from '../domain/summarizingService/watcher/api';
+import { getHandlersFromEventName as watcherGetHandlers } from '../domain/summarizingService/watcher/api';
 
 export type ApplicationConfiguration = {
   readonly eventBus: EventBus;
@@ -13,8 +13,8 @@ export type EventsConfiguration = {
 };
 
 const eventsConfiguration: EventsConfiguration = {
-  eventNames: [...getWatcherEvents()],
-  getHandlersFromNameFunctions: [getWatcherEventHandlersFromName],
+  eventNames: [...watcherGetEventNames()],
+  getHandlersFromNameFunctions: [watcherGetHandlers],
 };
 
 // eslint-disable-next-line functional/no-return-void

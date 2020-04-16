@@ -39,11 +39,4 @@ const Item = t.readonly(
 );
 type Item = t.TypeOf<typeof Item>;
 export { Item };
-
-export type ItemDTO = {
-  readonly itemId: string;
-  readonly itemType: string;
-  readonly itemName: string;
-  readonly itemDescription: string;
-  readonly itemParent: string | undefined;
-};
+export type ItemDTO = ReturnType<typeof Item.encode>;

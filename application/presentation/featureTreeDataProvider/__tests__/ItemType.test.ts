@@ -1,6 +1,6 @@
 import { ItemType, FileItemTypes, FileContentItemTypes } from '../ItemType';
 
-describe('ItemType.is', () => {
+describe('ItemType.is()', () => {
   test('should return false when the input is not a valid ItemType', () => {
     expect(ItemType.is('not an ItemType')).toBe(false);
   });

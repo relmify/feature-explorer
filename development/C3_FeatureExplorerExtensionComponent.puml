@@ -18,7 +18,7 @@ Container(Filterer, "Filterer", "Filters the summary based on the supplied filte
 ' Expanded component
 Container_Boundary(FeatureExplorerExtensionContainer, "Feature Explorer Extension") {
   ' Classes Derived from VS Code Classes
-  Component(FeatureExplorerTreeDataProvider, "Feature Explorer Tree Data Provider", "Provides data in a format suitable for displaying in a VS Code tree view")
+  Component(FeatureExplorerTreeDataProvider, "Feature Tree Data Provider", "Provides data in a format suitable for displaying in a VS Code tree view")
   Component(FeatureExplorerExtension, "Feature Explorer Extension", "Provides Feature Explorer functionality")
 
   ' VS Code to Feature Explorer Relationships

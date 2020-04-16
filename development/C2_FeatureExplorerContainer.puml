@@ -12,18 +12,18 @@ System_Ext(fs, "File System", "The file system that contains your feature files"
 
 System_Boundary(featureExplorer, "Feature Explorer") {
   Container(featureExplorerExtension, "Feature Explorer Extension", "VS Code Extension")
-  Container(summarizer, "Summarizer", "Node.js")
+  Container(featureTreeDataProvider, "Feature Tree Data Provider", "VS Code Tree Data Provider")
   Container(filterer, "Filterer", "Node.js")
 }
 
 Rel(featureAuthor, featureExplorerExtension, "views feature summary, jumps to summary item, and filters summary using")
 Rel(featureAuthor, vsCode, "creates, updates, and deletes feature files and directories using")
-Rel(featureExplorerExtension, vsCode, "provides feature explorer view and commands to", "vscode api")
+Rel(featureExplorerExtension, vsCode, "provides feature explorer view, configuration, and commands to", "vscode api")
 
-Rel(featureExplorerExtension, summarizer, "gets feature files summary from")
+Rel(featureExplorerExtension, featureTreeDataProvider, "gets feature tree data from")
 Rel(featureExplorerExtension, filterer, "filters feature files summary using")
 
-Rel(summarizer, fs, "watches feature files and directories and reads files in", "node.js")
+Rel(featureTreeDataProvider, fs, "watches feature files and directories and reads files in", "node.js")
 Rel(vsCode, fs, "watches files and directories and reads and writes files and directories in", "node.js")
 
 @enduml

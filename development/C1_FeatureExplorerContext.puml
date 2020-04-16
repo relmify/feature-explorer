@@ -16,7 +16,7 @@ System_Ext(fs, "File System", "The file system that contains your feature files"
 Rel(featureAuthor, featureExplorer, "views feature summary, jumps to summary item, and filters summary using")
 Rel(featureAuthor, vsCode, "creates, updates, and deletes feature files and directories using")
 
-Rel(featureExplorer, vsCode, "provides feature explorer view and commands to")
+Rel(featureExplorer, vsCode, "provides feature explorer view, configuration, and commands to")
 Rel(featureExplorer, fs, "watches directories and feature files and reads feature files in")
 Rel(vsCode, fs, "watches files and directories and reads and writes files and directories in")
 
