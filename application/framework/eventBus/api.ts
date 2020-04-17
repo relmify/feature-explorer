@@ -1,7 +1,7 @@
 import { Subject, BehaviorSubject } from 'rxjs';
 import { filter } from 'rxjs/operators';
-import { RegisteredEvents, EventRegistry, ValidEvent, Event, EventBus, EventHandler, EventSubscription } from './types';
-import { UnregisteredEventError } from './throws';
+import { right, fold, left } from 'fp-ts/lib/Either';
+import { RegisteredEvents, EventRegistry, EventName, Event, EventBus, EventHandler, EventSubscription } from './types';
 
 /* eslint-disable functional/no-expression-statement */
 /* eslint-disable functional/no-return-void */
@@ -9,56 +9,52 @@ import { UnregisteredEventError } from './throws';
 /* eslint-disable functional/no-conditional-statement */
 /* eslint-disable functional/no-throw-statement */
 
-export const createEventRegistry = (initialValue: RegisteredEvents = []): EventRegistry => {
-  return new BehaviorSubject<RegisteredEvents>(initialValue.length > 0 ? initialValue : []);
+export const createEventRegistry = (): EventRegistry => {
+  return new BehaviorSubject<RegisteredEvents>([]);
 };
 
-export const registerEvents = (eventRegistry: EventRegistry, eventNames: ReadonlyArray<string>): EventRegistry => {
+export const registerEvents = (eventBus: EventBus, EventNames: readonly EventName[]): void => {
+  const eventRegistry = eventBus.registry;
   const registeredEvents: RegisteredEvents = eventRegistry.getValue();
-  eventRegistry.next([...registeredEvents, ...eventNames]);
-  return eventRegistry;
+  eventRegistry.next([...registeredEvents, ...EventNames]);
 };
 
-export const isRegisteredEvent = (eventRegistry: EventRegistry, name: string): boolean => {
-  return eventRegistry.getValue().includes(name);
+export const isRegisteredEvent = (eventBus: EventBus, name: EventName): boolean => {
+  return eventBus.registry.getValue().includes(name);
 };
 
-export const getRegisteredEventNames = (eventRegistry: EventRegistry): readonly string[] => {
-  return eventRegistry.getValue();
+export const getRegisteredEventNames = (eventBus: EventBus): readonly EventName[] => {
+  return eventBus.registry.getValue();
 };
 
-/** Create a new EventBus */
-export const createEventBus = (eventNames: readonly string[] = []): EventBus => {
+export const createEventBus = (): EventBus => {
   return {
     subject: new Subject(),
-    registry: createEventRegistry(eventNames),
+    registry: createEventRegistry(),
   };
 };
 
 /**
  * Publish an Event to all subscribers
  *
- * @throws UnregisteredEventError if the event name is unregistered
+ * Logs an error if unable to publish due to an unregistered event name
  */
-export const publishEvent = (eventBus: EventBus) => (event: Event): void => {
-  if (!ValidEvent.is(event)) {
-    throw new UnregisteredEventError('Event name ${event} is not registered');
-  }
-  eventBus.subject.next(event);
+export const publishEvent = (eventBus: EventBus) => (event: Event) => {
+  const registeredEvent = isRegisteredEvent(eventBus, event.name)
+    ? right(event)
+    : left(`Unable to publish unregistered event ${event.name}`);
+  fold(console.log, eventBus.subject.next)(registeredEvent);
 };
 
-export type EventSubscribeFunction = (eventName: string, handlers: readonly EventHandler[]) => EventSubscription;
+export type EventSubscribeFunction = (eventName: EventName, handlers: readonly EventHandler[]) => EventSubscription;
 
-/** Subscribe to an event */
 export const subscribeToEvent = (eventBus: EventBus): EventSubscribeFunction => (
-  eventName: string,
+  eventName: EventName,
   handlers: readonly EventHandler[],
 ): EventSubscription => {
-  const handleAndPublishResults = (event: unknown): void => {
-    const returnedEvents = handlers.flatMap(handler => handler(event as Event));
+  const handleAndPublishResults = (event: Event): void => {
+    const returnedEvents = handlers.flatMap(handler => handler(event));
     returnedEvents.map(returnedEvent => publishEvent(eventBus)(returnedEvent));
   };
-  return eventBus.subject
-    .pipe(filter((event: unknown) => ValidEvent.is(event) && event.name === eventName))
-    .subscribe(handleAndPublishResults);
+  return eventBus.subject.pipe(filter((event: Event) => event.name === eventName)).subscribe(handleAndPublishResults);
 };

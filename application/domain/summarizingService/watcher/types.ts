@@ -1,14 +1,14 @@
 import * as t from 'io-ts';
 import { ServiceName, ErrorKinds } from './events';
 import { NonEmptyString } from '../../../common/types';
-import { getEventNames } from './api';
+import { Events } from './events';
 
 /** WatcherEventName */
 export type WatcherEventNameBrand = { readonly WatcherEventName: unique symbol };
 const WatcherEventName = t.brand(
   t.string,
   (str): str is t.Branded<string, WatcherEventNameBrand> =>
-    typeof str === 'string' && getEventNames().includes(`${ServiceName}.${str}`),
+    typeof str === 'string' && Events.includes(`${ServiceName}.${str}`),
   'WatcherEventName',
 );
 type WatcherEventName = t.TypeOf<typeof WatcherEventName>;

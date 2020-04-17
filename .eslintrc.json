@@ -24,6 +24,7 @@
   "plugins": ["@typescript-eslint", "unused-imports", "prettier", "functional"],
   "rules": {
     "no-unused-vars": "off",
+    "@typescript-eslint/no-unused-vars": "off",
     "unused-imports/no-unused-vars-ts": "warn",
     "unused-imports/no-unused-imports-ts": "warn",
     "no-unused-expressions": "error",
@@ -106,6 +107,8 @@
         "no-unused-expressions": "off",
         "unused-imports/no-unused-vars-ts": "off",
         "functional/functional-parameters": "off",
+        "functional/prefer-type-literal": "off",
+        "functional/prefer-readonly-type": "off",
         "@typescript-eslint/no-namespace": "off",
         "@typescript-eslint/no-explicit-any": "off",
         "@typescript-eslint/no-var-requires": "off"

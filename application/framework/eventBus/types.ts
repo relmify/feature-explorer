@@ -7,61 +7,59 @@ import { Subject, BehaviorSubject } from 'rxjs';
  * ony letters, numbers, and underscores. Segments are separated by dot
  * characters. A dot at the beginning or the end of the string is invalid.
  */
-const ServiceNameRegExp = '/^((?=[A-Z])[a-zA-Z0-9_]*(?:[.]?(?=[A-Z])[a-zA-Z0-9_]*)*?[^.])/';
-type ValidServiceNameBrand = { readonly ValidServiceName: unique symbol };
-const ValidServiceName = t.brand(
+const ServiceNameRegExp = RegExp('^((?=[A-Z])[a-zA-Z0-9_]*(?:[.]?(?=[A-Z])[a-zA-Z0-9_]*)*?[^.])$');
+type ServiceNameBrand = { readonly ServiceName: unique symbol };
+const ServiceName = t.brand(
   t.string,
-  (s): s is t.Branded<string, ValidServiceNameBrand> =>
-    typeof s === 'string' && s.length > 0 && !!ServiceNameRegExp.match(s),
-  'ValidServiceName',
+  (s): s is t.Branded<string, ServiceNameBrand> => typeof s === 'string' && s.length > 0 && ServiceNameRegExp.test(s),
+  'ServiceName',
 );
-type ValidServiceName = t.TypeOf<typeof ValidServiceName>;
-export { ValidServiceName };
-export type ServiceName = ReturnType<typeof ValidServiceName.encode>;
+type ServiceName = t.TypeOf<typeof ServiceName>;
+export { ServiceName };
+export type ServiceNameDto = ReturnType<typeof ServiceName.encode>;
 
 /**
  * A ValidLocalEventName is a non-empty string that starts with a capital letter
  * and contains only capital letters, numbers, and underscores.
  */
-const LocalEventNameRegExp = '/^((?=[A-Z])[A-Z0-9_]+)$/';
-type ValidLocalEventNameBrand = { readonly ValidLocalEventName: unique symbol };
-const ValidLocalEventName = t.brand(
+const LocalEventNameRegExp = RegExp('^((?=[A-Z])[A-Z0-9_]+)$');
+type LocalEventNameBrand = { readonly LocalEventName: unique symbol };
+const LocalEventName = t.brand(
   t.string,
-  (s): s is t.Branded<string, ValidLocalEventNameBrand> =>
-    typeof s === 'string' && s.length > 0 && !!LocalEventNameRegExp.match(s),
-  'ValidLocalEventName',
+  (s): s is t.Branded<string, LocalEventNameBrand> =>
+    typeof s === 'string' && s.length > 0 && LocalEventNameRegExp.test(s),
+  'LocalEventName',
 );
-type ValidLocalEventName = t.TypeOf<typeof ValidLocalEventName>;
-export { ValidLocalEventName };
-export type LocalEventName = ReturnType<typeof ValidLocalEventName.encode>;
+type LocalEventName = t.TypeOf<typeof LocalEventName>;
+export { LocalEventName };
+export type LocalEventNameDto = ReturnType<typeof LocalEventName.encode>;
 
 /**
- * A ValidEventName is a string compoase of a ValidServiceName + . + a ValidLocalEventName
+ * An EventName is a string compoase of a ServiceName + a dot + a LocalEventName
  */
-const EventNameRegExp = '/^((?=[A-Z])[a-zA-Z0-9_]*([.]?(?=[A-Z])[a-zA-Z0-9_]*)*?[^.])[.]((?=[A-Z])[A-Z0-9_]+)$/';
-type ValidEventNameBrand = { readonly ValidEventName: unique symbol };
-const ValidEventName = t.brand(
+const EventNameRegExp = RegExp('^((?=[A-Z])[a-zA-Z0-9_]*([.]?(?=[A-Z])[a-zA-Z0-9_]*)*?[^.])[.]((?=[A-Z])[A-Z0-9_]+)$');
+type EventNameBrand = { readonly EventName: unique symbol };
+const EventName = t.brand(
   t.string,
-  (s): s is t.Branded<string, ValidEventNameBrand> =>
-    typeof s === 'string' && s.length > 0 && !!EventNameRegExp.match(s),
-  'ValidEventName',
+  (s): s is t.Branded<string, EventNameBrand> => typeof s === 'string' && s.length > 0 && EventNameRegExp.test(s),
+  'EventName',
 );
-type ValidEventName = t.TypeOf<typeof ValidEventName>;
-export { ValidEventName };
-export type EventName = ReturnType<typeof ValidLocalEventName.encode>;
+type EventName = t.TypeOf<typeof EventName>;
+export { EventName };
+export type EventNameDto = ReturnType<typeof LocalEventName.encode>;
 
 /**
  * EventData is any data that you want to send along with an event
  */
-const ValidEventData = t.unknown;
-type ValidEventData = t.TypeOf<typeof ValidEventData>;
-export { ValidEventData };
-export type EventData = ReturnType<typeof ValidEventData.encode>;
+const EventData = t.unknown;
+type EventData = t.TypeOf<typeof EventData>;
+export { EventData };
+export type EventDataDto = ReturnType<typeof EventData.encode>;
 
-const ValidEvent = t.type({ name: ValidEventName, data: ValidEventData });
-type ValidEvent = t.TypeOf<typeof ValidEvent>;
-export { ValidEvent };
-export type Event = ReturnType<typeof ValidEvent.encode>;
+const Event = t.type({ name: EventName, data: EventData });
+type Event = t.TypeOf<typeof Event>;
+export { Event };
+export type EventDto = ReturnType<typeof Event.encode>;
 
 /**
  * An EventHandler is a function that gets called when an event that you subscribe to arrives.
@@ -72,7 +70,7 @@ export type EventHandler = (event: Event) => readonly Event[];
 /**
  * Maps an event name string to an event handler function
  */
-export type GetHandlersFunction = (eventName: string) => readonly EventHandler[];
+export type GetHandlersFunction = (eventName: EventName) => readonly EventHandler[];
 
 /**
  * An EventSubscription is returned when you subscribe to an event
@@ -83,7 +81,7 @@ export type EventSubscription = {
   readonly unsubscribe: () => void;
 };
 
-export type RegisteredEvents = ReadonlyArray<string>;
+export type RegisteredEvents = readonly EventName[];
 export type EventRegistry = BehaviorSubject<RegisteredEvents>;
 
 /** An EventBus allows you to publish and subdscribe to events */
@@ -91,3 +89,14 @@ export type EventBus = {
   readonly subject: Subject<Event>;
   readonly registry: EventRegistry;
 };
+
+const EventRegistrationInfo = t.type({
+  serviceName: ServiceName,
+  localEventNames: t.array(LocalEventName),
+});
+type EventRegistrationInfo = t.TypeOf<typeof EventRegistrationInfo>;
+export { EventRegistrationInfo };
+
+export type EventRegistrationInfoDto = ReturnType<typeof EventRegistrationInfo.encode>;
+
+export type GetRegistrationInfoFunction = () => EventRegistrationInfoDto;

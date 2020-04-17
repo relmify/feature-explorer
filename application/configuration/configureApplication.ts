@@ -1,42 +1,21 @@
-import { GetHandlersFunction, EventBus } from '../framework/eventBus';
-import { createEventBus, subscribeToEvent, getRegisteredEventNames } from '../framework/eventBus/api';
-import { getEventNames as watcherGetEventNames } from '../domain/summarizingService/watcher/api';
+import { createEventBus, registerEvents } from '../framework/eventBus';
+import { getEventRegistrationInfo as watcherGetRegistrationInfo } from '../domain/summarizingService/watcher/api';
 import { getHandlersFromEventName as watcherGetHandlers } from '../domain/summarizingService/watcher/api';
+import { EventsConfiguration, ApplicationConfiguration } from './types';
+import { getEventNames, subscribeToEvents } from './helpers';
 
-export type ApplicationConfiguration = {
-  readonly eventBus: EventBus;
-};
-
-export type EventsConfiguration = {
-  readonly eventNames: readonly string[];
-  readonly getHandlersFromNameFunctions: readonly GetHandlersFunction[];
-};
+/* eslint-disable functional/no-expression-statement */
 
 const eventsConfiguration: EventsConfiguration = {
-  eventNames: [...watcherGetEventNames()],
+  eventNames: [...getEventNames(watcherGetRegistrationInfo())],
   getHandlersFromNameFunctions: [watcherGetHandlers],
-};
-
-// eslint-disable-next-line functional/no-return-void
-export const subscribeToEvents = (eventBus: EventBus, configuration: EventsConfiguration): void => {
-  const registeredEventNames = getRegisteredEventNames(eventBus.registry);
-  // eslint-disable-next-line functional/no-expression-statement
-  registeredEventNames.map(eventName => {
-    const eventHandlers = configuration.getHandlersFromNameFunctions
-      .map(fromNameFunction => fromNameFunction(eventName))
-      .reduce((acc, cur) => {
-        return cur !== [] ? [...acc, ...cur] : acc;
-      }, []);
-    // eslint-disable-next-line functional/no-expression-statement
-    subscribeToEvent(eventBus)(eventName, eventHandlers);
-  });
 };
 
 export const configureApplication = (
   configuration: EventsConfiguration = eventsConfiguration,
 ): ApplicationConfiguration => {
-  const eventBus = createEventBus(configuration.eventNames);
-  // eslint-disable-next-line functional/no-expression-statement
+  const eventBus = createEventBus();
+  registerEvents(eventBus, configuration.eventNames);
   subscribeToEvents(eventBus, configuration);
 
   return {

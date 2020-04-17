@@ -1,44 +1,34 @@
-import { EventRegistry } from '../types';
-import { createEventRegistry, registerEvents, isRegisteredEvent, createEventBus } from '../api';
+import { EventBus, EventName } from '../types';
+import { registerEvents, isRegisteredEvent, createEventBus } from '../index';
 
-let eventRegistry: EventRegistry;
+let eventBus: EventBus;
 beforeEach(() => {
-  eventRegistry = createEventRegistry();
+  eventBus = createEventBus();
 });
+
 describe('registerEvents()', () => {
   test('should successfully register a new valid event name', () => {
-    const eventName = 'MyService.EVENT';
-    const registry = registerEvents(eventRegistry, [eventName]);
-    expect(isRegisteredEvent(registry, eventName)).toBe(true);
-  });
-  test('should thow an error if the event name is missing the service name', () => {
-    const eventName = 'EVENT';
-    const registry = registerEvents(eventRegistry, [eventName]);
-    expect(() => isRegisteredEvent(registry, eventName)).toThrow();
+    const eventName = 'MyService.EVENT' as EventName;
+    registerEvents(eventBus, [eventName]);
+    expect(isRegisteredEvent(eventBus, eventName)).toBe(true);
   });
 });
 describe('isRegisteredEvent()', () => {
   test('should return true if the event name is registered', () => {
-    const eventName = 'MyService.EVENT';
-    const registry = registerEvents(eventRegistry, [eventName]);
-    expect(isRegisteredEvent(registry, eventName)).toBe(true);
+    const eventName = 'MyService.EVENT' as EventName;
+    registerEvents(eventBus, [eventName]);
+    expect(isRegisteredEvent(eventBus, eventName)).toBe(true);
   });
   test('should return false if the event name is not registered', () => {
-    expect(isRegisteredEvent(eventRegistry, 'MyService.NOT_REGISTERED')).toBe(false);
-  });
-  test('should return true if the event name is registered on creation', () => {
-    const eventName = 'MyService.CREATE_TIME_EVENT';
-    const registry = createEventRegistry([eventName]);
-    expect(isRegisteredEvent(registry, eventName)).toBe(true);
+    expect(isRegisteredEvent(eventBus, 'MyService.NOT_REGISTERED' as EventName)).toBe(false);
   });
 });
 
 describe('createEventBus()', () => {
-  test('should succeed with no parameters', () => {
-    expect(createEventBus().subject).not.toEqual(undefined);
-  });
-  test('should register the supplied events', () => {
-    expect(createEventBus(['EVENT1', 'EVENT2']).registry.getValue()).toEqual(['EVENT1', 'EVENT2']);
+  test('should return an event bus with an event Registry', () => {
+    const eventBus = createEventBus();
+    expect(eventBus.subject).not.toEqual(undefined);
+    expect(eventBus.registry).not.toEqual(undefined);
   });
 });
 
