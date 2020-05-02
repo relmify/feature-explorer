@@ -36,7 +36,6 @@ export const getEventNames = (): readonly EventName[] => {
 /**
  * Initialize service dependencies.
  */
-// eslint-disable-next-line functional/no-return-void
 export const initializeService = (dependencies: it.Dependencies): it.Service => {
   // eslint-disable-next-line functional/no-expression-statement
   dt.Service.next({

@@ -21,20 +21,20 @@ export const eventsConfiguration: dt.EventsConfiguration = {
 };
 
 const subscribeToEvents = (eventBus: eb.EventBus, configuration: dt.EventsConfiguration): void => {
-  const registeredEventNames = eb.getRegisteredEvents(eventBus);
+  const registeredEventNames = eb.getRegisteredEventNames(eventBus);
   registeredEventNames.map((eventName: eb.EventName) => {
     const eventHandlers = configuration.allGetEventHandlersFunctions
       .map(fromNameFunction => fromNameFunction(eventName))
       .reduce((acc, cur) => {
         return cur !== [] ? [...acc, ...cur] : acc;
       }, []);
-    eb.subscribeToEvent(eventBus)(eventName, eventHandlers);
+    eb.subscribeHandlersToEventName(eventBus, eventName, eventHandlers);
   });
 };
 
 export const initializeEventBus = (configuration: dt.EventsConfiguration): it.EventBusConfiguration => {
   const eventBus = eb.createEventBus(errorHandler);
-  eb.registerEvents(eventBus, configuration.allEventNames);
+  eb.registerEventNames(eventBus, configuration.allEventNames);
   subscribeToEvents(eventBus, configuration);
   return { eventBus: eventBus };
 };
