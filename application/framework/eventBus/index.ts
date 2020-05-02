@@ -1,19 +1,5 @@
 /**
- * EventBus public API
- *
- * Any EventBus implementation that complies with this API will be compatible
- * with EventBus client code.
+ * EventBus public interface
  */
-export {
-  Event,
-  EventName,
-  EventHandler,
-  EventBus,
-  GetHandlersFunction,
-  EventSubscription,
-  EventRegistrationInfo,
-  EventRegistrationInfoDto,
-  GetRegistrationInfoFunction,
-} from './types';
-
-export { createEventBus, registerEvents, isRegisteredEvent, subscribeToEvent, getRegisteredEventNames } from './api';
+export * from './interfaceTypes';
+export * from './interface';

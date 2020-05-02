@@ -1,24 +1,13 @@
-import { createEventBus, registerEvents } from '../framework/eventBus';
-import { getEventRegistrationInfo as watcherGetRegistrationInfo } from '../domain/summarizingService/watcher/api';
-import { getHandlersFromEventName as watcherGetHandlers } from '../domain/summarizingService/watcher/api';
-import { EventsConfiguration, ApplicationConfiguration } from './types';
-import { getEventNames, subscribeToEvents } from './helpers';
+import * as d from './domain';
+import * as dt from './domainTypes';
 
-/* eslint-disable functional/no-expression-statement */
-
-const eventsConfiguration: EventsConfiguration = {
-  eventNames: [...getEventNames(watcherGetRegistrationInfo())],
-  getHandlersFromNameFunctions: [watcherGetHandlers],
-};
+import { ApplicationConfiguration } from './interfaceTypes';
 
 export const configureApplication = (
-  configuration: EventsConfiguration = eventsConfiguration,
+  configuration: dt.EventsConfiguration = d.eventsConfiguration,
 ): ApplicationConfiguration => {
-  const eventBus = createEventBus();
-  registerEvents(eventBus, configuration.eventNames);
-  subscribeToEvents(eventBus, configuration);
+  const eventBusConfiguration = d.initializeEventBus(configuration);
+  const servicesConfiguration = d.initializeServices(eventBusConfiguration.eventBus);
 
-  return {
-    eventBus: eventBus,
-  };
+  return { ...eventBusConfiguration, ...servicesConfiguration };
 };

@@ -1,60 +1,45 @@
-import { Subject, BehaviorSubject } from 'rxjs';
-import { filter } from 'rxjs/operators';
-import { right, fold, left } from 'fp-ts/lib/Either';
-import { RegisteredEvents, EventRegistry, EventName, Event, EventBus, EventHandler, EventSubscription } from './types';
+import * as t from 'io-ts';
+import * as it from './interfaceTypes';
+import * as d from './domain';
 
-/* eslint-disable functional/no-expression-statement */
 /* eslint-disable functional/no-return-void */
-/* eslint-disable functional/functional-parameters */
-/* eslint-disable functional/no-conditional-statement */
-/* eslint-disable functional/no-throw-statement */
-
-export const createEventRegistry = (): EventRegistry => {
-  return new BehaviorSubject<RegisteredEvents>([]);
-};
-
-export const registerEvents = (eventBus: EventBus, EventNames: readonly EventName[]): void => {
-  const eventRegistry = eventBus.registry;
-  const registeredEvents: RegisteredEvents = eventRegistry.getValue();
-  eventRegistry.next([...registeredEvents, ...EventNames]);
-};
-
-export const isRegisteredEvent = (eventBus: EventBus, name: EventName): boolean => {
-  return eventBus.registry.getValue().includes(name);
-};
-
-export const getRegisteredEventNames = (eventBus: EventBus): readonly EventName[] => {
-  return eventBus.registry.getValue();
-};
-
-export const createEventBus = (): EventBus => {
-  return {
-    subject: new Subject(),
-    registry: createEventRegistry(),
-  };
-};
 
 /**
- * Publish an Event to all subscribers
+ * Creates a new event bus.
  *
- * Logs an error if unable to publish due to an unregistered event name
+ * @param contractViolationHandler is the function that will be called when a contract violation error is
+ * returned by an event handler, or when the event bus itself detects a contract violation.
  */
-export const publishEvent = (eventBus: EventBus) => (event: Event) => {
-  const registeredEvent = isRegisteredEvent(eventBus, event.name)
-    ? right(event)
-    : left(`Unable to publish unregistered event ${event.name}`);
-  fold(console.log, eventBus.subject.next)(registeredEvent);
-};
+export type createEventBus = (contractViolationHandler: it.ContractViolationHandler) => it.EventBus;
+export const createEventBus = d.createEventBus;
 
-export type EventSubscribeFunction = (eventName: EventName, handlers: readonly EventHandler[]) => EventSubscription;
+/**
+ * Registers the named events with an event bus.
+ *
+ * Any invalid event names will not be registered and will cause the event bus error handler to be called.
+ */
+export type registerEvents = (eventBus: it.EventBus, eventNames: readonly it.EventName[]) => void;
+export const registerEvents = d.registerEvents;
 
-export const subscribeToEvent = (eventBus: EventBus): EventSubscribeFunction => (
-  eventName: EventName,
-  handlers: readonly EventHandler[],
-): EventSubscription => {
-  const handleAndPublishResults = (event: Event): void => {
-    const returnedEvents = handlers.flatMap(handler => handler(event));
-    returnedEvents.map(returnedEvent => publishEvent(eventBus)(returnedEvent));
-  };
-  return eventBus.subject.pipe(filter((event: Event) => event.name === eventName)).subscribe(handleAndPublishResults);
-};
+/**
+ * Gets the list of event names that have been registered with the event bus
+ */
+export type getRegisteredEvents = (eventBus: it.EventBus) => readonly it.EventName[];
+export const getRegisteredEvents = d.getRegisteredEvents;
+
+/**
+ * Subscribes a list of event handlers to an event.
+ */
+export type subscribeToEvent = (
+  eventBus: it.EventBus,
+) => (eventName: it.EventName, handlers: readonly it.EventHandler[]) => void;
+export const subscribeToEvent = d.subscribeToEvent;
+
+/**
+ * Converts type validation errors into a contract violation error.
+ *
+ * @param componentName - the name of the component that is reporting the contract violation error
+ * @param validationErrors - an array of type validation errors to include in the ContractViolation message.
+ */
+export type errorsToContractViolation = (componentName: string, validationErrors: t.Errors) => it.ContractViolation;
+export const errorsToContractViolation = d.errorsToContractViolation;

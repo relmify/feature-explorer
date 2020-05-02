@@ -1,10 +1,12 @@
-import { GetHandlersFunction, EventBus, EventName } from '../framework/eventBus';
+import { EventBus } from '../framework/eventBus';
+import { Service as WatcherService } from '../domain/summarizingService/watcher';
 
-export type ApplicationConfiguration = {
+export type EventBusConfiguration = {
   readonly eventBus: EventBus;
 };
 
-export type EventsConfiguration = {
-  readonly eventNames: readonly EventName[];
-  readonly getHandlersFromNameFunctions: readonly GetHandlersFunction[];
+export type ServicesConfiguration = {
+  readonly watcherService: WatcherService;
 };
+
+export type ApplicationConfiguration = EventBusConfiguration & ServicesConfiguration;

@@ -4,7 +4,7 @@
  */
 import { NonEmptyString } from '../../../common/types';
 import { Either } from 'fp-ts/lib/Either';
-import { WatchedFile } from './types';
+import { WatchedFile } from './domainTypes';
 
 /**
  * Model

@@ -1,4 +1,4 @@
-import { PositiveNumber, NonNegativeNumber, NegativeNumber } from '../Number';
+import { PositiveNumber, NonNegativeNumber, NegativeNumber, NonZeroNumber } from '../Number';
 
 describe('PositiveNumber.is()', () => {
   test.each([
@@ -54,7 +54,24 @@ describe('NegativeNumber.is()', () => {
   });
 });
 
-// Uses PositiveNumber.is() so no need for more exhaustive testing
+describe('NonZeroNumber.is()', () => {
+  test.each([
+    [Number.POSITIVE_INFINITY, true],
+    [Number.MAX_VALUE, true],
+    [1, true],
+    [Number.MIN_VALUE, true],
+    [0, false],
+    [-Number.MIN_VALUE, true],
+    [-1, true],
+    [-Number.MAX_VALUE, true],
+    [Number.NEGATIVE_INFINITY, true],
+    [NaN, false],
+    ['not a number', false],
+  ])('with input: %p should return: %p', (input, expected) => {
+    expect(NonZeroNumber.is(input)).toBe(expected);
+  });
+});
+
 describe('PositiveNumber.decode()', () => {
   test('should succeed when a positive number is supplied', () => {
     expect(PositiveNumber.decode(1)).toBeRight();
@@ -67,14 +84,12 @@ describe('PositiveNumber.decode()', () => {
   });
 });
 
-// Assumes any branded positive number is valid no matter what the number is
 describe('PositiveNumber.encode()', () => {
   test('should return the correct value', () => {
     expect(PositiveNumber.encode(1.11 as PositiveNumber)).toEqual(1.11);
   });
 });
 
-// Uses NonNegativeNumber.is() so no need for more exhaustive testing
 describe('NonNegativeNumber.decode()', () => {
   test('should succeed when a positive number is supplied', () => {
     expect(NonNegativeNumber.decode(1)).toBeRight();
@@ -87,14 +102,12 @@ describe('NonNegativeNumber.decode()', () => {
   });
 });
 
-// Assumes any branded positive number is valid no matter what the number is
 describe('NonNegativeNumber.encode()', () => {
   test('should return the correct value', () => {
     expect(NonNegativeNumber.encode(1.11 as NonNegativeNumber)).toEqual(1.11);
   });
 });
 
-// Uses NegativeNumber.is() so no need for more exhaustive testing
 describe('NegativeNumber.decode()', () => {
   test('should succeed when a negative number is supplied', () => {
     expect(NegativeNumber.decode(-1)).toBeRight();
@@ -107,9 +120,26 @@ describe('NegativeNumber.decode()', () => {
   });
 });
 
-// Assumes any branded positive number is valid no matter what the number is
 describe('NegativeNumber.encode()', () => {
   test('should return the correct value', () => {
     expect(NegativeNumber.encode(-1.23 as NegativeNumber)).toEqual(-1.23);
+  });
+});
+
+describe('NonZeroNumber.decode()', () => {
+  test('should succeed when a negative number is supplied', () => {
+    expect(NonZeroNumber.decode(-1)).toBeRight();
+  });
+  test('should succeed when a positive number is supplied', () => {
+    expect(NonZeroNumber.decode(1)).toBeRight();
+  });
+  test('should fail when zero is supplied', () => {
+    expect(NonZeroNumber.decode(0)).toBeLeft();
+  });
+});
+
+describe('NonZeroNumber.encode()', () => {
+  test('should return the correct value', () => {
+    expect(NonZeroNumber.encode(-1.23 as NonZeroNumber)).toEqual(-1.23);
   });
 });

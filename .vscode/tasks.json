@@ -14,7 +14,18 @@
 			"group": {
 				"kind": "build",
 				"isDefault": true
-			}
+			},
+			"label": "npm: watch",
+			"detail": "tsc -watch -p ./"
+		},
+		{
+			"type": "npm",
+			"script": "check-lint",
+			"problemMatcher": [
+				"$eslint-stylish"
+			],
+			"label": "npm: check-lint",
+			"detail": "eslint ./application --ext .ts --ext .js"
 		}
 	]
 }

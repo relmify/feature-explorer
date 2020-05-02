@@ -1,4 +1,4 @@
-import { Event, LocalEventName, ServiceName, EventName, EventData } from '../types';
+import { Event, LocalEventName, ServiceName, EventName, EventData } from '../domainTypes';
 
 describe('ServiceName.is()', () => {
   test('should be true for a correctly formatted service name', () => {

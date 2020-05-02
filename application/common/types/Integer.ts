@@ -6,7 +6,7 @@
  */
 import * as t from 'io-ts';
 
-import { PositiveNumber, NonNegativeNumber, NegativeNumber } from './Number';
+import { PositiveNumber, NonNegativeNumber, NegativeNumber, NonZeroNumber } from './Number';
 
 export type IntegerBrand = { readonly Integer: unique symbol };
 /**
@@ -47,3 +47,10 @@ export { NonNegativeInteger };
 const NegativeInteger = t.intersection([NegativeNumber, Integer]);
 type NegativeInteger = t.TypeOf<typeof NegativeInteger>;
 export { NegativeInteger };
+
+/**
+ * Integers != 0
+ * @category Codec
+ */
+export const NonZeroInteger = t.intersection([NonZeroNumber, Integer]);
+export type NonZeroInteger = t.TypeOf<typeof NonZeroInteger>;

@@ -1,10 +1,11 @@
-import { Event, EventHandler } from '../../framework/eventBus';
+import { Event, EventHandler, ContractViolation } from '../../framework/eventBus';
+import { Either, left } from 'fp-ts/lib/Either';
 
 //
 // Handlers
 //
-export const fileWatchStartedHandler: EventHandler = (event: Event): readonly Event[] => {
-  return [];
+export const fileWatchStartedHandler: EventHandler = (event: Event): Either<ContractViolation, readonly Event[]> => {
+  return left(new ContractViolation('FeatureTreeDataProvider', 'fileWatchStartedHandler not implemented'));
 };
 
 //

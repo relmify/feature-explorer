@@ -7,9 +7,22 @@
  * @PackageDocumentation
  */
 import * as t from 'io-ts';
+import { BehaviorSubject } from 'rxjs';
+import { EventBus } from '../../../framework/eventBus';
 
 //
-// Gherkin AST
+// Constant Values
+//
+export const ServiceName = 'Parser';
+export const Commands = ['PARSE_FILE'];
+export const Queries = [];
+export const SuccessEvents = ['FILE_PARSED', 'FILE_PARSED_WITH_ERRORS'];
+export const ErrorEvents = ['PARSER_ERROR'];
+export const Events = [...Commands, ...Queries, ...SuccessEvents, ...ErrorEvents];
+export const ParserFailureKinds = ['FileDoesNotExist', 'NotAFile', 'CommandNotImplemented'];
+
+//
+// Gherkin AST types
 //
 export const GherkinLocation = t.type({
   column: t.union([t.number, t.undefined]),
@@ -134,44 +147,55 @@ export const GherkinError = t.type({
 });
 
 //
-// Parsed File Types
+// Parser Types
 //
 export const FileId = t.string;
+export type FileId = t.TypeOf<typeof FileId>;
+
 export const FilePath = t.string;
+export type FilePath = t.TypeOf<typeof FilePath>;
+
 export const FileName = t.string;
-export const ErrorMessage = t.string;
+export type FileName = t.TypeOf<typeof FileName>;
 
-// Error Kind
-export const ErrorKinds = ['FileDoesNotExist', 'NotAFile', 'GherkinParserError'];
-export type ErrorKindBrand = { readonly ErrorKind: unique symbol };
-const ErrorKind = t.brand(
-  t.string,
-  (str): str is t.Branded<string, ErrorKindBrand> => ErrorKinds.includes(str),
-  'ErrorKind',
-);
-type ErrorKind = t.TypeOf<typeof ErrorKind>;
-export { ErrorKind };
-
-// Parser Error
-export const ParserError = t.type({
+export const File = t.type({
+  fileId: FileId,
   filePath: FilePath,
-  errorKind: ErrorKind,
-  errorMessage: ErrorMessage,
+  fileName: FileName,
 });
+export type File = t.TypeOf<typeof File>;
 
-// Parsed Content
 export const ParsedContent = t.type({
   feature: t.union([GherkinFeature, t.undefined]),
   comments: t.union([t.readonlyArray(GherkinComment), t.undefined]),
 });
+export type ParsedContent = t.TypeOf<typeof ParsedContent>;
 
-// Parsed File
-const ParsedFile = t.type({
-  fileId: FileId,
-  filePath: FilePath,
-  fileName: FileName,
-  fileContent: t.union([t.array(ParserError), ParsedContent]),
+export const ParsingErrors = t.readonlyArray(GherkinError);
+export type ParsingErrors = t.TypeOf<typeof ParsingErrors>;
+
+export const ParsedFile = t.type({
+  file: File,
+  fileContent: t.union([ParsedContent, t.undefined]),
+  parsingErrors: t.union([ParsingErrors, t.undefined]),
 });
-type ParsedFile = t.TypeOf<typeof ParsedFile>;
-export { ParsedFile };
-export type ParsedFileDto = ReturnType<typeof ParsedFile.encode>;
+export type ParsedFile = t.TypeOf<typeof ParsedFile>;
+
+//
+// Service State
+//
+
+export type Dependencies = {
+  readonly eventBus: EventBus;
+};
+
+export type State = {
+  readonly dependencies: Dependencies | undefined;
+};
+
+const initialState: State = {
+  dependencies: undefined,
+};
+
+export const Service = new BehaviorSubject<State>(initialState);
+export type Service = typeof Service;

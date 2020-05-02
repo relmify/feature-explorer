@@ -1,71 +1,104 @@
 import * as t from 'io-ts';
-import { ServiceName, ErrorKinds } from './events';
 import { NonEmptyString } from '../../../common/types';
-import { Events } from './events';
+import { EventBus } from '../../../framework/eventBus';
+import { BehaviorSubject } from 'rxjs';
 
-/** WatcherEventName */
-export type WatcherEventNameBrand = { readonly WatcherEventName: unique symbol };
-const WatcherEventName = t.brand(
+//
+// Constant values
+//
+
+export const ServiceName = 'Watcher';
+export const Commands = ['START_FILE_WATCH', 'STOP_FILE_WATCH'];
+export const Queries = [];
+export const SuccessEvents = [
+  'FILE_WATCH_STARTED',
+  'FILE_WATCH_STOPPED',
+  'FILE_CREATED',
+  'FILE_DELETED',
+  'FILE_MOVED',
+  'FILE_CONTENTS_UPDATED',
+];
+export const FailureEvents = ['UNABLE_TO_START_FILE_WATCH', 'UNABLE_TO_STOP_FILE_WATCH'];
+export const Events = [...Commands, ...Queries, ...SuccessEvents, ...FailureEvents];
+export const FailureKinds = ['INVALID_PATH_OR_GLOB', 'NO_SUCH_FILE_WATCHER'];
+
+//
+// Brands for branded types
+//
+
+type WatcherEventNameBrand = { readonly WatcherEventName: unique symbol };
+type WatcherIdBrand = { readonly WatcherId: unique symbol };
+type WatcherFailureKindBrand = { readonly WatcherFailureKind: unique symbol };
+
+//
+// Domain Types
+//
+
+export const WatcherEventName = t.brand(
   t.string,
   (str): str is t.Branded<string, WatcherEventNameBrand> =>
     typeof str === 'string' && Events.includes(`${ServiceName}.${str}`),
   'WatcherEventName',
 );
-type WatcherEventName = t.TypeOf<typeof WatcherEventName>;
-export { WatcherEventName };
-export type WatcherEventNameDto = ReturnType<typeof WatcherEventName.encode>;
+export type WatcherEventName = t.TypeOf<typeof WatcherEventName>;
 
-/** WatcherId */
-export type WatcherIdBrand = { readonly WatcherId: unique symbol };
-const WatcherId = t.brand(t.string, (str): str is t.Branded<string, WatcherIdBrand> => str.length > 0, 'WatcherId');
-type WatcherId = t.TypeOf<typeof WatcherId>;
-export { WatcherId };
-export type WatcherIdDto = ReturnType<typeof WatcherId.encode>;
+export const WatcherId = t.brand(
+  t.string,
+  (str): str is t.Branded<string, WatcherIdBrand> => str.length > 0,
+  'WatcherId',
+);
+export type WatcherId = t.TypeOf<typeof WatcherId>;
 
-/** FileWatcher */
-const FileWatcher = t.type({
+export const FileWatcher = t.type({
   watcherId: WatcherId,
   rootDirectory: NonEmptyString,
   globPattern: NonEmptyString,
 });
-type FileWatcher = t.TypeOf<typeof FileWatcher>;
-export { FileWatcher };
-export type FileWatcherDto = ReturnType<typeof FileWatcher.encode>;
+export type FileWatcher = t.TypeOf<typeof FileWatcher>;
 
-/** WatchedFile */
-const WatchedFile = t.type({
+export const WatchedFile = t.type({
   fileID: NonEmptyString,
   fileName: NonEmptyString,
   filePath: NonEmptyString,
 });
-type WatchedFile = t.TypeOf<typeof WatchedFile>;
-export { WatchedFile };
-export type WatchedFileDto = ReturnType<typeof WatchedFile.encode>;
+export type WatchedFile = t.TypeOf<typeof WatchedFile>;
 
-/** WatchSpecifier */
-const WatchSpecifier = t.type({
+export const WatchSpecifier = t.type({
   rootDirectory: NonEmptyString,
   globPattern: NonEmptyString,
 });
-type WatchSpecifier = t.TypeOf<typeof WatchSpecifier>;
-export { WatchSpecifier };
-export type WatchSpecifierDto = ReturnType<typeof WatchSpecifier.encode>;
+export type WatchSpecifier = t.TypeOf<typeof WatchSpecifier>;
 
-/** WatcherErrorKind */
-export type WatcherErrorKindBrand = { readonly WatcherErrorKind: unique symbol };
-const WatcherErrorKind = t.brand(
+export const WatcherFailureKind = t.brand(
   t.string,
-  (str): str is t.Branded<string, WatcherErrorKindBrand> => ErrorKinds.includes(str),
-  'WatcherErrorKind',
+  (str): str is t.Branded<string, WatcherFailureKindBrand> => FailureKinds.includes(str),
+  'WatcherFailureKind',
 );
-type WatcherErrorKind = t.TypeOf<typeof WatcherErrorKind>;
-export { WatcherErrorKind };
+export type WatcherFailureKind = t.TypeOf<typeof WatcherFailureKind>;
 
-/** WatcherError */
-const WatcherError = t.type({
-  kind: WatcherErrorKind,
+export const WatcherFailure = t.type({
+  kind: WatcherFailureKind,
   message: NonEmptyString,
 });
-type WatcherError = t.TypeOf<typeof WatcherError>;
-export { WatcherError };
-export type WatcherErrorDto = ReturnType<typeof WatcherError.encode>;
+export type WatcherFailure = t.TypeOf<typeof WatcherFailure>;
+
+//
+// Service State
+//
+
+export type Dependencies = {
+  readonly eventBus: EventBus;
+  //readonly fileSystemWatcher: FileSystemWatcher;
+};
+
+export type State = {
+  readonly dependencies: Dependencies | undefined;
+  // readonly fileWatches: readonly FileWatch[];
+};
+
+const initialState: State = {
+  dependencies: undefined,
+};
+
+export const Service = new BehaviorSubject<State>(initialState);
+export type Service = typeof Service;
