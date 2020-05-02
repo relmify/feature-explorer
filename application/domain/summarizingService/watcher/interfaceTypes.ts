@@ -1,20 +1,35 @@
 /**
- * Watcher interface types
+ * Watcher interface
+ * @packageDocumentation
  */
 import * as t from 'io-ts';
 import * as dt from './domainTypes';
 import { ContractViolation } from '../../../framework/eventBus';
 
 //
+// Constant values
+//
+export const ServiceName = 'Watcher';
+
+const Commands = ['START_FILE_WATCH', 'STOP_FILE_WATCH'];
+const Queries: readonly string[] = [];
+const SuccessEvents = [
+  'FILE_WATCH_STARTED',
+  'FILE_WATCH_STOPPED',
+  'FILE_CREATED',
+  'FILE_DELETED',
+  'FILE_MOVED',
+  'FILE_CONTENTS_UPDATED',
+];
+const FailureEvents = ['UNABLE_TO_START_FILE_WATCH', 'UNABLE_TO_STOP_FILE_WATCH'];
+
+export const Events = [...Commands, ...Queries, ...SuccessEvents, ...FailureEvents];
+
+//
 // Service and dependencies
 //
 export type Service = dt.Service;
 export type Dependencies = dt.Dependencies;
-
-//
-// Event name type
-//
-export type WatcherEventName = t.OutputOf<typeof dt.WatcherEventName>;
 
 //
 // Event data types
@@ -88,6 +103,6 @@ export type UnableToStopFileWatch = {
 export class WatcherContractViolation extends ContractViolation {
   constructor(message: string) {
     // eslint-disable-next-line functional/no-expression-statement
-    super(dt.ServiceName, message);
+    super(ServiceName, message);
   }
 }

@@ -30,7 +30,7 @@ export const getEventHandlers = (eventName: EventName): readonly EventHandler[] 
  */
 // eslint-disable-next-line functional/functional-parameters
 export const getEventNames = (): readonly EventName[] => {
-  return dt.Events.map(localName => dt.ServiceName + '.' + localName);
+  return it.Events.map(localName => it.ServiceName + '.' + localName);
 };
 
 /**

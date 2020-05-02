@@ -6,41 +6,17 @@ import { BehaviorSubject } from 'rxjs';
 //
 // Constant values
 //
-
-export const ServiceName = 'Watcher';
-export const Commands = ['START_FILE_WATCH', 'STOP_FILE_WATCH'];
-export const Queries = [];
-export const SuccessEvents = [
-  'FILE_WATCH_STARTED',
-  'FILE_WATCH_STOPPED',
-  'FILE_CREATED',
-  'FILE_DELETED',
-  'FILE_MOVED',
-  'FILE_CONTENTS_UPDATED',
-];
-export const FailureEvents = ['UNABLE_TO_START_FILE_WATCH', 'UNABLE_TO_STOP_FILE_WATCH'];
-export const Events = [...Commands, ...Queries, ...SuccessEvents, ...FailureEvents];
 export const FailureKinds = ['INVALID_PATH_OR_GLOB', 'NO_SUCH_FILE_WATCHER'];
 
 //
 // Brands for branded types
 //
-
-type WatcherEventNameBrand = { readonly WatcherEventName: unique symbol };
 type WatcherIdBrand = { readonly WatcherId: unique symbol };
 type WatcherFailureKindBrand = { readonly WatcherFailureKind: unique symbol };
 
 //
 // Domain Types
 //
-
-export const WatcherEventName = t.brand(
-  t.string,
-  (str): str is t.Branded<string, WatcherEventNameBrand> =>
-    typeof str === 'string' && Events.includes(`${ServiceName}.${str}`),
-  'WatcherEventName',
-);
-export type WatcherEventName = t.TypeOf<typeof WatcherEventName>;
 
 export const WatcherId = t.brand(
   t.string,

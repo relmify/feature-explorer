@@ -3,6 +3,18 @@ import * as dt from './domainTypes';
 import { ContractViolation } from '../../../framework/eventBus';
 
 //
+// Constant Values
+//
+export const ServiceName = 'Parser';
+
+const Commands = ['PARSE_FILE'];
+const Queries: readonly string[] = [];
+const SuccessEvents = ['FILE_PARSED', 'FILE_PARSED_WITH_ERRORS'];
+const FailureEvents = ['PARSER_ERROR'];
+
+export const Events = [...Commands, ...Queries, ...SuccessEvents, ...FailureEvents];
+
+//
 // Service and dependencies
 //
 export type Service = dt.Service;
@@ -49,6 +61,6 @@ export type FileParsedWithErrorsEvent = {
 export class ParserContractViolation extends ContractViolation {
   constructor(message: string) {
     // eslint-disable-next-line functional/no-expression-statement
-    super(dt.ServiceName, message);
+    super(ServiceName, message);
   }
 }

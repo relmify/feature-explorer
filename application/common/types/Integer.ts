@@ -14,13 +14,7 @@ export type IntegerBrand = { readonly Integer: unique symbol };
  *
  * @category Codec
  */
-const Integer = t.brand(
-  t.number,
-  (num): num is t.Branded<number, IntegerBrand> =>
-    //  Number.isInteger(num) && num <= Number.MAX_SAFE_INTEGER && num >= -Number.MAX_SAFE_INTEGER,
-    Number.isInteger(num),
-  'Integer',
-);
+const Integer = t.brand(t.number, (num): num is t.Branded<number, IntegerBrand> => Number.isInteger(num), 'Integer');
 type Integer = t.TypeOf<typeof Integer>;
 export { Integer };
 

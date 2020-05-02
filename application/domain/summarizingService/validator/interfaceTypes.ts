@@ -4,6 +4,18 @@ import * as t from 'io-ts';
 import { ParsedFile } from '../parser';
 
 //
+// Constant values
+//
+export const ServiceName = 'Validator';
+
+const Commands = ['VALIDATE_FILE'];
+const Queries: readonly string[] = [];
+const SuccessEvents = ['FILE_VALIDATED'];
+const FailureEvents = ['FILE_VALIDATION_FAILED'];
+
+export const Events = [...Commands, ...Queries, ...SuccessEvents, ...FailureEvents];
+
+//
 // Service and dependencies
 //
 export type Service = dt.Service;
@@ -38,6 +50,6 @@ export type FileValidated = {
 export class ValidatorContractViolation extends ContractViolation {
   constructor(message: string) {
     // eslint-disable-next-line functional/no-expression-statement
-    super(dt.ServiceName, message);
+    super(ServiceName, message);
   }
 }

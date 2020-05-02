@@ -13,12 +13,6 @@ import { EventBus } from '../../../framework/eventBus';
 //
 // Constant Values
 //
-export const ServiceName = 'Parser';
-export const Commands = ['PARSE_FILE'];
-export const Queries = [];
-export const SuccessEvents = ['FILE_PARSED', 'FILE_PARSED_WITH_ERRORS'];
-export const ErrorEvents = ['PARSER_ERROR'];
-export const Events = [...Commands, ...Queries, ...SuccessEvents, ...ErrorEvents];
 export const ParserFailureKinds = ['FileDoesNotExist', 'NotAFile', 'CommandNotImplemented'];
 
 //

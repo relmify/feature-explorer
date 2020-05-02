@@ -6,12 +6,6 @@ import * as t from 'io-ts';
 //
 // Constant values
 //
-export const ServiceName = 'Validator';
-export const Commands = ['VALIDATE_FILE'];
-export const Queries = [];
-export const SuccessEvents = ['FILE_VALIDATED'];
-export const ErrorEvents = ['FILE_VALIDATION_FAILED'];
-export const Events = [...Commands, ...Queries, ...SuccessEvents, ...ErrorEvents];
 export const ContentTypes = ['FEATURE', 'BACKGROUND', 'RULE', 'SCENARIO', 'SCENARIO_OUTLINE', 'EXAMPLES', 'DATA_TABLE'];
 export const RemarkTypes = [
   'MISSING_NAME',
