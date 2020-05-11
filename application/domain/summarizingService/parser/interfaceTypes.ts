@@ -10,7 +10,7 @@ export const ServiceName = 'Parser';
 const Commands = ['PARSE_FILE'];
 const Queries: readonly string[] = [];
 const SuccessEvents = ['FILE_PARSED', 'FILE_PARSED_WITH_ERRORS'];
-const FailureEvents = ['PARSER_ERROR'];
+const FailureEvents = ['UNABLE_TO_PARSE_FILE'];
 
 export const Events = [...Commands, ...Queries, ...SuccessEvents, ...FailureEvents];
 

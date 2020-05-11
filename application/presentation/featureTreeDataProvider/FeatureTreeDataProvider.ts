@@ -1,6 +1,6 @@
 import { TreeDataProvider, EventEmitter, Event, TreeItemCollapsibleState, Uri } from 'vscode';
-import { FeatureItem } from './FeatureItem';
-import { FeatureTreeItem, createFeatureTreeItem, itemParent, itemType } from './FeatureTreeItem';
+import { Item as SummaryItem } from '../../application/summary';
+import { SummaryTreeItem, createSummaryTreeItem } from './FeatureTreeItem';
 import { FeatureTree } from './FeatureTree';
 import { mutableArrayOf } from '../../common/utils/array';
 import equal = require('fast-deep-equal');
@@ -15,16 +15,16 @@ import equal = require('fast-deep-equal');
 /**
  * Implements the vscode api for extensions that provide a tree view
  */
-export class FeatureTreeDataProvider implements TreeDataProvider<FeatureItem> {
+export class SummaryTreeDataProvider implements TreeDataProvider<SummaryItem> {
   private readonly uriParser: (uriString: string) => Uri;
-  private readonly eventEmitter: EventEmitter<FeatureItem | undefined>;
-  readonly onDidChangeTreeData: Event<FeatureItem | undefined>;
+  private readonly eventEmitter: EventEmitter<SummaryItem | undefined>;
+  readonly onDidChangeTreeData: Event<SummaryItem | undefined>;
 
   private readonly featureTree: FeatureTree;
 
   constructor(
     uriParser: (uriString: string) => Uri,
-    eventEmitter: EventEmitter<FeatureItem | undefined>,
+    eventEmitter: EventEmitter<SummaryItem | undefined>,
     featureTree: FeatureTree,
   ) {
     this.uriParser = uriParser;
@@ -37,29 +37,27 @@ export class FeatureTreeDataProvider implements TreeDataProvider<FeatureItem> {
     this.eventEmitter.fire();
   }
 
-  getTreeItem(item: FeatureItem): FeatureTreeItem {
-    return createFeatureTreeItem(this.uriParser, item, TreeItemCollapsibleState.Collapsed);
+  getTreeItem(item: SummaryItem): SummaryTreeItem {
+    return createSummaryTreeItem(this.uriParser, item, TreeItemCollapsibleState.Collapsed);
   }
 
-  getChildren(item?: FeatureItem): FeatureItem[] {
+  getChildren(item?: SummaryItem): SummaryItem[] {
     return item
       ? (this.featureTree
           .getValue()
-          .featureTreeItems.filter(currentItem => equal(itemParent.get(currentItem), item.itemId)) as Array<
-          FeatureItem
-        >)
+          .featureTreeItems.filter(currentItem => equal(currentItem.itemParent, item.itemId)) as Array<SummaryItem>)
       : (this.featureTree
           .getValue()
-          .featureTreeItems.filter(currentItem => itemParent.get(currentItem) === undefined) as Array<FeatureItem>);
+          .featureTreeItems.filter(currentItem => currentItem.itemParent === undefined) as Array<SummaryItem>);
   }
 
-  getParent(item: FeatureItem): FeatureItem | undefined {
+  getParent(item: SummaryItem): SummaryItem | undefined {
     return this.featureTree
       .getValue()
-      .featureTreeItems.filter(currentItem => equal(itemType.get(currentItem), item.itemParent))[0];
+      .featureTreeItems.filter(currentItem => equal(currentItem.itemType, item.itemParent))[0];
   }
 
-  getAll(): FeatureItem[] {
+  getAll(): SummaryItem[] {
     return mutableArrayOf(this.featureTree.getValue().featureTreeItems);
   }
 }

@@ -63,10 +63,6 @@ export type FileWatchStopped = {
   readonly name: 'Watcher.FILE_WATCH_STOPPED';
   readonly data: FileWatcher;
 };
-
-//
-// Generated events
-//
 export type FileCreated = {
   readonly name: 'Watcher.FILE_CREATED';
   readonly data: WatchedFile;

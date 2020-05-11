@@ -11,7 +11,7 @@ export const ServiceName = 'Validator';
 const Commands = ['VALIDATE_FILE'];
 const Queries: readonly string[] = [];
 const SuccessEvents = ['FILE_VALIDATED'];
-const FailureEvents = ['FILE_VALIDATION_FAILED'];
+const FailureEvents = ['UNABLE_TO_VALIDATE_FILE'];
 
 export const Events = [...Commands, ...Queries, ...SuccessEvents, ...FailureEvents];
 
@@ -24,8 +24,8 @@ export type Dependencies = dt.Dependencies;
 //
 // Event data types
 //
-//export type UnvalidatedFile = t.OutputOf<typeof dt.ParsedFile>;
 export type ValidatedFile = t.OutputOf<typeof dt.ValidatedFile>;
+//export type UnvalidatedFile = t.OutputOf<typeof dt.ParsedFile>;
 
 //
 // Commands
@@ -42,6 +42,14 @@ export type FileValidated = {
   readonly name: 'Validator.FILE_VALIDATED';
   readonly data: ValidatedFile;
 };
+
+//
+// Failure Events
+//
+
+//
+// External Events
+//
 
 //
 // Custom contract violation error type

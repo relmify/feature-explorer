@@ -1,2 +1,3 @@
 import 'jest-extended';
-import './jest/custom-matchers';
+import '@relmify/jest-fp-ts';
+// import './jest/custom-matchers';

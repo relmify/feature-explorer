@@ -2,7 +2,7 @@ module.exports = {
   preset: 'ts-jest',
   testEnvironment: 'node',
   testPathIgnorePatterns: ['/application/test/integration/', '/node_modules/', '/out/'],
-  coverageDirectory: './out/coverage',
+  coverageDirectory: './coverage',
   coveragePathIgnorePatterns: ['/application/test/integration/', '/node_modules/'],
   setupFilesAfterEnv: ['./jest.setup.js'],
   watchPlugins: [

@@ -97,7 +97,7 @@ export const ValidatedFile = t.type({
 export type ValidatedFile = t.TypeOf<typeof ValidatedFile>;
 
 //
-// Service State
+// Service and Dependencies
 //
 export type Dependencies = {
   readonly eventBus: EventBus;

@@ -1,5 +1,1 @@
-export * from './ItemType';
-export * from './ContentLocation';
-export * from './Item';
-export * from './FileItem';
-export * from './FileContentItem';
+export { Item as SummaryItem, FileItem, FileContentItem } from '../../application/summary';

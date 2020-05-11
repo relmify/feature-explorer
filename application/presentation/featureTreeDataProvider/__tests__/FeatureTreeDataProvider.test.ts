@@ -1,9 +1,5 @@
-// import { uriParserStub, eventEmitterStub } from './test/utils/stubs';
-// import { FeatureTreeDataProvider } from '../FeatureTreeDataProvider';
-// import { fileItemOf, FileItemType } from './featureTreeDataProvider/FeatureItem';
-
-describe('ItemType', () => {
-  it.todo('should ');
+describe('FeatureTreeDataProvider', () => {
+  test.todo('should ');
 });
 
 //
