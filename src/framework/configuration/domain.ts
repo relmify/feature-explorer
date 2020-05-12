@@ -1,7 +1,7 @@
 import * as dt from './domainTypes';
 import * as it from './interfaceTypes';
-import * as eb from '../framework/eventBus';
-import * as watcher from '../domain/summarizingService/watcher';
+import * as eb from '../eventBus';
+import * as watcher from '../../domain/summarizingService/watcher';
 
 /* eslint-disable functional/no-expression-statement */
 /* eslint-disable functional/no-return-void */

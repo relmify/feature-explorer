@@ -2,7 +2,7 @@ import { TreeDataProvider, EventEmitter, Event, TreeItemCollapsibleState, Uri } 
 import { Item as SummaryItem } from '../../application/summary';
 import { SummaryTreeItem, createSummaryTreeItem } from './FeatureTreeItem';
 import { FeatureTree } from './FeatureTree';
-import { mutableArrayOf } from '../../common/utils/array';
+import { mutableArrayOf } from '../../framework/utils/array';
 import equal = require('fast-deep-equal');
 
 /* eslint-disable functional/no-class */

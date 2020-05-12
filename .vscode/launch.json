@@ -34,9 +34,9 @@
       "console": "integratedTerminal",
       "program": "${workspaceRoot}/node_modules/cucumber/bin/cucumber-js",
       "args": [
-        "${workspaceRoot}/application/test/features/**/*.feature",
+        "${workspaceRoot}/src/test/features/**/*.feature",
         "-r",
-        "${workspaceRoot}/application/test/**/__steps__/**/*.steps.ts"
+        "${workspaceRoot}/src/test/**/__steps__/**/*.steps.ts"
       ],
       "preLaunchTask": "${defaultBuildTask}",
       "skipFiles": ["<node_internals>/**/*.js"]

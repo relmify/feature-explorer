@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import { configureApplication } from './configuration';
+import { configureApplication } from './framework/configuration';
 import { SummaryItem } from './presentation/featureTreeDataProvider';
 import { createFeatureTree } from './presentation/featureTreeDataProvider/FeatureTree';
 import { SummaryTreeDataProvider } from './presentation/featureTreeDataProvider/FeatureTreeDataProvider';

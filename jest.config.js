@@ -1,9 +1,9 @@
 module.exports = {
   preset: 'ts-jest',
   testEnvironment: 'node',
-  testPathIgnorePatterns: ['/application/test/integration/', '/node_modules/', '/out/'],
+  testPathIgnorePatterns: ['/src/test/integration/', '/node_modules/', '/out/'],
   coverageDirectory: './coverage',
-  coveragePathIgnorePatterns: ['/application/test/integration/', '/node_modules/'],
+  coveragePathIgnorePatterns: ['/src/test/integration/', '/node_modules/'],
   setupFilesAfterEnv: ['./jest.setup.js'],
   watchPlugins: [
     ['jest-watch-toggle-config', { setting: 'verbose' }],

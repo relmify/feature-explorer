@@ -1,5 +1,5 @@
-import { EventName, GetHandlers } from '../framework/eventBus';
-import { ServiceName } from '../framework/eventBus/domainTypes';
+import { EventName, GetHandlers } from '../eventBus';
+import { ServiceName } from '../eventBus/domainTypes';
 
 export type EventsConfiguration = {
   readonly allEventNames: readonly EventName[];

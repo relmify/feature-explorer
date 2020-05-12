@@ -27,7 +27,7 @@
     "onCommand:featureExplorer.refresh",
     "onView:featureExplorer.view"
   ],
-  "main": "./out/application/vscodeExtension.js",
+  "main": "./out/src/vscodeExtension.js",
   "contributes": {
     "views": {
       "explorer": [
@@ -56,16 +56,16 @@
     "clean": "npm-run-all clean:**",
     "clean:out": "rimraf out",
     "clean:jest-cache": "jest --clear-cache --bail 0",
-    "lint:check": "eslint ./application --ext .ts --ext .js",
-    "lint:fix": "eslint --fix ./application --ext .ts --ext .js",
-    "prettier:check": "prettier --check \"{application,jest}/**/*.{ts,js}\"",
-    "prettier:fix": "prettier --write \"{application,jest}/**/*.{ts,js}\"",
+    "lint:check": "eslint ./src --ext .ts --ext .js",
+    "lint:fix": "eslint --fix ./src --ext .ts --ext .js",
+    "prettier:check": "prettier --check \"src/**/*.{ts,js}\"",
+    "prettier:fix": "prettier --write \"src/**/*.{ts,js}\"",
     "docs": "typedoc",
     "test": "jest",
     "test:watch": "jest --watch",
     "test:all": "npm-run-all test test:integration test:feature",
     "test:unit": "jest",
-    "test:integration": "node ./out/application/test/integration/jestTestRunner.js",
+    "test:integration": "node ./out/src/test/integration/jestTestRunner.js",
     "test:feature": "cucumber-js  -p default --format summary"
   },
   "devDependencies": {

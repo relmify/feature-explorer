@@ -1,7 +1,7 @@
 import * as t from 'io-ts';
 import { BehaviorSubject } from 'rxjs';
 import { EventBus } from '../../framework/eventBus';
-import { NonEmptyString, PositiveInteger, NonNegativeInteger } from '../../common/types';
+import { NonEmptyString, PositiveInteger, NonNegativeInteger } from '../../framework/types';
 
 //
 // Constant values

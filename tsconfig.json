@@ -17,14 +17,15 @@
     "allowSyntheticDefaultImports": false,
     "esModuleInterop": true
   },
-  "include": ["application", "jest"],
+  "include": ["src", "global.d.ts"],
+  "exclude": ["**/__mocks__/*"],
   "typedocOptions": {
-    "inputFiles": ["./application"],
-    "files": ["./application"],
+    "inputFiles": ["./src"],
+    "files": ["./src"],
     "theme": "node_modules/typedoc-neo-theme/bin/default",
     "mode": "modules",
     "out": "docs",
-    "exclude": ["**/application/test/*", "**/*.test.ts", "**/__tests__/*", "**/__mocks__/*", "**/__steps__/*"],
+    "exclude": ["**/src/test/*", "**/*.test.ts", "**/__tests__/*", "**/__mocks__/*", "**/__steps__/*"],
     "excludeNotExported": true
   }
 }

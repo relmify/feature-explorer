@@ -51,7 +51,7 @@
   "overrides": [
     {
       // Relax rules for test files
-      "files": ["**/*.test.ts", "application/test/**/*.ts"],
+      "files": ["**/*.test.ts", "src/test/**/*.ts"],
       "env": {
         "jest": true
       },

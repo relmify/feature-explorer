@@ -1,5 +1,5 @@
-import { EventBus } from '../framework/eventBus';
-import { Service as WatcherService } from '../domain/summarizingService/watcher';
+import { EventBus } from '../eventBus';
+import { Service as WatcherService } from '../../domain/summarizingService/watcher';
 
 export type EventBusConfiguration = {
   readonly eventBus: EventBus;
