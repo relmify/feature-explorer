@@ -1,5 +1,5 @@
-import { NonEmptyString, PositiveInteger } from '../../../framework/types';
-import { EventBus } from '../../../framework/eventBus';
+import { NonEmptyString, PositiveInteger } from '../../framework/types';
+import { EventBus } from '../../framework/eventBus';
 import { BehaviorSubject } from 'rxjs';
 import * as t from 'io-ts';
 

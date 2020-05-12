@@ -1,6 +1,6 @@
 import * as t from 'io-ts';
-import { NonEmptyString } from '../../../framework/types';
-import { EventBus } from '../../../framework/eventBus';
+import { NonEmptyString } from '../../framework/types';
+import { EventBus } from '../../framework/eventBus';
 import { BehaviorSubject } from 'rxjs';
 
 //

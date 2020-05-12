@@ -1,4 +1,4 @@
-import { ContractViolation } from '../../../framework/eventBus';
+import { ContractViolation } from '../../framework/eventBus';
 import * as dt from './domainTypes';
 import * as t from 'io-ts';
 import { ParsedFile } from '../parser';

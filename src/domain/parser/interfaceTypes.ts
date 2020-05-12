@@ -1,6 +1,6 @@
 import * as t from 'io-ts';
 import * as dt from './domainTypes';
-import { ContractViolation } from '../../../framework/eventBus';
+import { ContractViolation } from '../../framework/eventBus';
 
 //
 // Constant Values

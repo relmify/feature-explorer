@@ -1,14 +1,18 @@
-import { Event, EventHandler, EventName, ContractViolation } from '../../../framework/eventBus';
+import { Event, EventHandler, EventName, ContractViolation } from '../../framework/eventBus';
 import { Either, left } from 'fp-ts/lib/Either';
-import * as dt from './domainTypes';
 import * as it from './interfaceTypes';
+import * as dt from './domainTypes';
 
 //
 // Command Handlers
 //
 
-export const parseFileHandler: EventHandler = (event: Event): Either<ContractViolation, readonly Event[]> => {
-  return left(new it.ParserContractViolation('Parse file command not implemented'));
+export const startFileWatchHandler: EventHandler = (event: Event): Either<ContractViolation, readonly Event[]> => {
+  return left(new it.WatcherContractViolation('Start file watcher command not implemented'));
+};
+
+export const stopFileWatchHandler: EventHandler = (event: Event): Either<ContractViolation, readonly Event[]> => {
+  return left(new it.WatcherContractViolation('Stop file watcher command not implemented'));
 };
 
 //
@@ -20,7 +24,8 @@ export const parseFileHandler: EventHandler = (event: Event): Either<ContractVio
  */
 export const getEventHandlers = (eventName: EventName): readonly EventHandler[] => {
   const eventHandlers: Record<string, readonly EventHandler[]> = {
-    'Parser.PARSE_FILE': [parseFileHandler],
+    'Watcher.START_FILE_WATCH': [startFileWatchHandler],
+    'Watcher.STOP_FILE_WATCH': [stopFileWatchHandler],
   };
   return eventHandlers[eventName] || [];
 };

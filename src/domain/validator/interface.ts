@@ -1,4 +1,4 @@
-import { Event, EventName, EventHandler, ContractViolation } from '../../../framework/eventBus';
+import { Event, EventName, EventHandler, ContractViolation } from '../../framework/eventBus';
 import { Either, left } from 'fp-ts/lib/Either';
 import * as dt from './domainTypes';
 import * as it from './interfaceTypes';

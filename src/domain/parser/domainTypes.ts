@@ -8,7 +8,7 @@
  */
 import * as t from 'io-ts';
 import { BehaviorSubject } from 'rxjs';
-import { EventBus } from '../../../framework/eventBus';
+import { EventBus } from '../../framework/eventBus';
 
 //
 // Constant Values

@@ -2,7 +2,7 @@
  * @packageDocumentation
  * The Watcher service watches for changes to .feature files
  */
-import { NonEmptyString } from '../../../framework/types';
+import { NonEmptyString } from '../../framework/types';
 import { Either } from 'fp-ts/lib/Either';
 import { WatchedFile } from './domainTypes';
 

@@ -18,7 +18,7 @@
     "esModuleInterop": true
   },
   "include": ["src", "global.d.ts"],
-  "exclude": ["**/__mocks__/*"],
+  "exclude": ["**/__mocks__/*", "**/__tests__/*"],
   "typedocOptions": {
     "inputFiles": ["./src"],
     "files": ["./src"],
