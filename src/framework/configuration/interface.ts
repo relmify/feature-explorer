@@ -4,10 +4,10 @@ import * as dt from './domainTypes';
 import { ApplicationConfiguration } from './interfaceTypes';
 
 export const configureApplication = (
-  configuration: dt.EventsConfiguration = d.eventsConfiguration,
+  configuration: dt.Messagesconfiguration = d.messagesConfiguration,
 ): ApplicationConfiguration => {
-  const eventBusConfiguration = d.initializeEventBus(configuration);
-  const servicesConfiguration = d.initializeServices(eventBusConfiguration.eventBus);
+  const messageBusConfiguration = d.initializeMessageBus(configuration);
+  const servicesConfiguration = d.initializeServices(messageBusConfiguration.messageBus);
 
-  return { ...eventBusConfiguration, ...servicesConfiguration };
+  return { ...messageBusConfiguration, ...servicesConfiguration };
 };

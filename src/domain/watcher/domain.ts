@@ -31,7 +31,7 @@ export type FileSystemWatcher<T> = {
   readonly deleteFileSystemWatcher: (fileSystemWatcher: T) => void;
 };
 
-// The callbacks should create and dispatch the appropriate events.
+// The callbacks should create and dispatch the appropriate messages.
 // I think this is business logic... so can be represented here aside from
 // the specific implementation of the file watcher itself.
 

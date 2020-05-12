@@ -1,6 +1,6 @@
 import * as t from 'io-ts';
 import { BehaviorSubject } from 'rxjs';
-import { EventBus } from '../../framework/eventBus';
+import { MessageBus } from '../../framework/messageBus';
 import { NonEmptyString, PositiveInteger, NonNegativeInteger } from '../../framework/types';
 
 //
@@ -139,7 +139,7 @@ export type DirectorySearchPattern = t.TypeOf<typeof DirectorySearchPattern>;
 // Service and Dependencies
 //
 export type Dependencies = {
-  readonly eventBus: EventBus;
+  readonly messageBus: MessageBus;
 };
 
 export type State = {

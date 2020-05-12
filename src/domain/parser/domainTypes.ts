@@ -8,7 +8,7 @@
  */
 import * as t from 'io-ts';
 import { BehaviorSubject } from 'rxjs';
-import { EventBus } from '../../framework/eventBus';
+import { MessageBus } from '../../framework/messageBus';
 
 //
 // Constant Values
@@ -180,7 +180,7 @@ export type ParsedFile = t.TypeOf<typeof ParsedFile>;
 //
 
 export type Dependencies = {
-  readonly eventBus: EventBus;
+  readonly messageBus: MessageBus;
 };
 
 export type State = {

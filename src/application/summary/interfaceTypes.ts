@@ -1,6 +1,6 @@
 import * as t from 'io-ts';
 import * as dt from './domainTypes';
-import { ContractViolation } from '../../framework/eventBus';
+import { ContractViolation } from '../../framework/messageBus';
 
 //
 // Constant values
@@ -12,7 +12,7 @@ const Queries: readonly string[] = [];
 const SuccessEvents = ['DIRECTORY_SEARCH_PATTERN_SET'];
 const FailureEvents = ['FAILED_TO_SET_DIRECTORY_SEARCH_PATTERN'];
 
-export const Events = [...Commands, ...Queries, ...SuccessEvents, ...FailureEvents];
+export const Messages = [...Commands, ...Queries, ...SuccessEvents, ...FailureEvents];
 export const FileItemTypes = dt.FileItemTypes;
 export const FileContentItemTypes = dt.FileContentItemTypes;
 
@@ -23,7 +23,7 @@ export type Service = dt.Service;
 export type Dependencies = dt.Dependencies;
 
 //
-// Event data types
+// Message data types
 //
 export type Item = t.OutputOf<typeof dt.Item>;
 export type ItemType = t.OutputOf<typeof dt.ItemType>;

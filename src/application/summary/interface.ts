@@ -1,4 +1,4 @@
-import { Event, EventName, EventHandler, ContractViolation } from '../../framework/eventBus';
+import { Message, MessageType, MessageHandler, ContractViolation } from '../../framework/messageBus';
 import { Either, left, isRight } from 'fp-ts/lib/Either';
 import * as dt from './domainTypes';
 import * as it from './interfaceTypes';
@@ -6,7 +6,9 @@ import * as it from './interfaceTypes';
 //
 // External Event Handlers
 //
-export const fileWatchStartedHandler: EventHandler = (event: Event): Either<ContractViolation, readonly Event[]> => {
+export const fileWatchStartedHandler: MessageHandler = (
+  message: Message,
+): Either<ContractViolation, readonly Message[]> => {
   return left(new ContractViolation('FeatureTreeDataProvider', 'fileWatchStartedHandler not implemented'));
 };
 
@@ -28,21 +30,21 @@ export const isFileContentItem = (item: it.Item): item is it.FileContentItem => 
 };
 
 /**
- * Get the event handlers for all of the events that are subscribed to by this service.
+ * Get the message handlers for all of the message types that are subscribed to by this service.
  */
-export const getEventHandlers = (eventName: EventName): readonly EventHandler[] => {
-  const eventHandlers: Record<string, readonly EventHandler[]> = {
+export const getMessageHandlers = (messageType: MessageType): readonly MessageHandler[] => {
+  const messageHandlers: Record<string, readonly MessageHandler[]> = {
     'Watcher.FILE_WATCH_STARTED': [fileWatchStartedHandler],
   };
-  return eventHandlers[eventName] || [];
+  return messageHandlers[messageType] || [];
 };
 
 /**
- * Get the names of all the events that are published by this service
+ * Get the message types of all the messages that are published by this service
  */
 // eslint-disable-next-line functional/functional-parameters
-export const getEventNames = (): readonly EventName[] => {
-  return it.Events.map(localName => it.ServiceName + '.' + localName);
+export const getMessageTypes = (): readonly MessageType[] => {
+  return it.Messages.map(localName => it.ServiceName + '.' + localName);
 };
 
 /**

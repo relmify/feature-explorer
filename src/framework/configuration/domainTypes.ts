@@ -1,9 +1,9 @@
-import { EventName, GetHandlers } from '../eventBus';
-import { ServiceName } from '../eventBus/domainTypes';
+import { MessageType, GetHandlers } from '../messageBus';
+import { ServiceName } from '../messageBus/domainTypes';
 
-export type EventsConfiguration = {
-  readonly allEventNames: readonly EventName[];
-  readonly allGetEventHandlersFunctions: readonly GetHandlers[];
+export type Messagesconfiguration = {
+  readonly allMessageTypes: readonly MessageType[];
+  readonly allGetMessageHandlersFunctions: readonly GetHandlers[];
 };
 
 export type ServiceDependencies = unknown;

@@ -1,6 +1,6 @@
 import * as t from 'io-ts';
 import { NonEmptyString } from '../../framework/types';
-import { EventBus } from '../../framework/eventBus';
+import { MessageBus } from '../../framework/messageBus';
 import { BehaviorSubject } from 'rxjs';
 
 //
@@ -63,7 +63,7 @@ export type WatcherFailure = t.TypeOf<typeof WatcherFailure>;
 //
 
 export type Dependencies = {
-  readonly eventBus: EventBus;
+  readonly messageBus: MessageBus;
   //readonly fileSystemWatcher: FileSystemWatcher;
 };
 

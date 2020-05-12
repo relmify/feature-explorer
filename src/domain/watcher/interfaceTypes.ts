@@ -4,7 +4,7 @@
  */
 import * as t from 'io-ts';
 import * as dt from './domainTypes';
-import { ContractViolation } from '../../framework/eventBus';
+import { ContractViolation } from '../../framework/messageBus';
 
 //
 // Constant values
@@ -23,7 +23,7 @@ const SuccessEvents = [
 ];
 const FailureEvents = ['UNABLE_TO_START_FILE_WATCH', 'UNABLE_TO_STOP_FILE_WATCH'];
 
-export const Events = [...Commands, ...Queries, ...SuccessEvents, ...FailureEvents];
+export const Messages = [...Commands, ...Queries, ...SuccessEvents, ...FailureEvents];
 
 //
 // Service and dependencies

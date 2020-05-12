@@ -1,5 +1,5 @@
 import { NonEmptyString, PositiveInteger } from '../../framework/types';
-import { EventBus } from '../../framework/eventBus';
+import { MessageBus } from '../../framework/messageBus';
 import { BehaviorSubject } from 'rxjs';
 import * as t from 'io-ts';
 
@@ -100,7 +100,7 @@ export type ValidatedFile = t.TypeOf<typeof ValidatedFile>;
 // Service and Dependencies
 //
 export type Dependencies = {
-  readonly eventBus: EventBus;
+  readonly messageBus: MessageBus;
   //readonly fileSystemWatcher: FileSystemWatcher;
 };
 

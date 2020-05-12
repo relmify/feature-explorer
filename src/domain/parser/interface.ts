@@ -1,4 +1,4 @@
-import { Event, EventHandler, EventName, ContractViolation } from '../../framework/eventBus';
+import { Message, MessageHandler, MessageType, ContractViolation } from '../../framework/messageBus';
 import { Either, left } from 'fp-ts/lib/Either';
 import * as dt from './domainTypes';
 import * as it from './interfaceTypes';
@@ -7,7 +7,7 @@ import * as it from './interfaceTypes';
 // Command Handlers
 //
 
-export const parseFileHandler: EventHandler = (event: Event): Either<ContractViolation, readonly Event[]> => {
+export const parseFileHandler: MessageHandler = (message: Message): Either<ContractViolation, readonly Message[]> => {
   return left(new it.ParserContractViolation('Parse file command not implemented'));
 };
 
@@ -16,21 +16,21 @@ export const parseFileHandler: EventHandler = (event: Event): Either<ContractVio
 //
 
 /**
- * Get the event handlers for all of the events that are subscribed to by this service.
+ * Get the message handlers for all of the message types that are subscribed to by this service.
  */
-export const getEventHandlers = (eventName: EventName): readonly EventHandler[] => {
-  const eventHandlers: Record<string, readonly EventHandler[]> = {
+export const getMessageHandlers = (messageType: MessageType): readonly MessageHandler[] => {
+  const messageHandlers: Record<string, readonly MessageHandler[]> = {
     'Parser.PARSE_FILE': [parseFileHandler],
   };
-  return eventHandlers[eventName] || [];
+  return messageHandlers[messageType] || [];
 };
 
 /**
- * Get the names of all the events that are published by this service
+ * Get the names of all the message types that are published by this service
  */
 // eslint-disable-next-line functional/functional-parameters
-export const getEventNames = (): readonly EventName[] => {
-  return it.Events.map(localName => it.ServiceName + '.' + localName);
+export const getMessageTypes = (): readonly MessageType[] => {
+  return it.Messages.map(localName => it.ServiceName + '.' + localName);
 };
 
 /**

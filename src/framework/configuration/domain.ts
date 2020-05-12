@@ -1,6 +1,6 @@
 import * as dt from './domainTypes';
 import * as it from './interfaceTypes';
-import * as eb from '../eventBus';
+import * as mb from '../messageBus';
 import * as watcher from '../../domain/watcher';
 
 /* eslint-disable functional/no-expression-statement */
@@ -8,43 +8,43 @@ import * as watcher from '../../domain/watcher';
 /* eslint-disable functional/no-conditional-statement */
 
 //
-// Initialize Event Bus Step
+// Initialize Message Bus Step
 //
 
-const errorHandler: eb.ContractViolationHandler = (error: Error) => {
+const errorHandler: mb.ContractViolationHandler = (error: Error) => {
   console.log(error.message);
 };
 
-export const eventsConfiguration: dt.EventsConfiguration = {
-  allEventNames: [...watcher.getEventNames()],
-  allGetEventHandlersFunctions: [watcher.getEventHandlers],
+export const messagesConfiguration: dt.Messagesconfiguration = {
+  allMessageTypes: [...watcher.getMessageTypes()],
+  allGetMessageHandlersFunctions: [watcher.getMessageHandlers],
 };
 
-const subscribeToEvents = (eventBus: eb.EventBus, configuration: dt.EventsConfiguration): void => {
-  const registeredEventNames = eb.getRegisteredEventNames(eventBus);
-  registeredEventNames.map((eventName: eb.EventName) => {
-    const eventHandlers = configuration.allGetEventHandlersFunctions
-      .map(fromNameFunction => fromNameFunction(eventName))
+const subscribeToMessages = (messageBus: mb.MessageBus, configuration: dt.Messagesconfiguration): void => {
+  const registeredMessageTypes = mb.getRegisteredMessageTypes(messageBus);
+  registeredMessageTypes.map((messageType: mb.MessageType) => {
+    const messageHandlers = configuration.allGetMessageHandlersFunctions
+      .map(getHandlersFunction => getHandlersFunction(messageType))
       .reduce((acc, cur) => {
         return cur !== [] ? [...acc, ...cur] : acc;
       }, []);
-    eb.subscribeHandlersToEventName(eventBus, eventName, eventHandlers);
+    mb.subscribeHandlersToMessageType(messageBus, messageType, messageHandlers);
   });
 };
 
-export const initializeEventBus = (configuration: dt.EventsConfiguration): it.EventBusConfiguration => {
-  const eventBus = eb.createEventBus(errorHandler);
-  eb.registerEventNames(eventBus, configuration.allEventNames);
-  subscribeToEvents(eventBus, configuration);
-  return { eventBus: eventBus };
+export const initializeMessageBus = (configuration: dt.Messagesconfiguration): it.MessageBusConfiguration => {
+  const messageBus = mb.createMessageBus(errorHandler);
+  mb.registerMessageTypes(messageBus, configuration.allMessageTypes);
+  subscribeToMessages(messageBus, configuration);
+  return { messageBus: messageBus };
 };
 
 //
 // Initialize Services Step
 //
 
-export const initializeServices = (eventBus: eb.EventBus): it.ServicesConfiguration => {
+export const initializeServices = (messageBus: mb.MessageBus): it.ServicesConfiguration => {
   return {
-    watcherService: watcher.initializeService({ eventBus: eventBus }),
+    watcherService: watcher.initializeService({ messageBus: messageBus }),
   };
 };

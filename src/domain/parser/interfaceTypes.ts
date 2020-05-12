@@ -1,6 +1,6 @@
 import * as t from 'io-ts';
 import * as dt from './domainTypes';
-import { ContractViolation } from '../../framework/eventBus';
+import { ContractViolation } from '../../framework/messageBus';
 
 //
 // Constant Values
@@ -12,7 +12,7 @@ const Queries: readonly string[] = [];
 const SuccessEvents = ['FILE_PARSED', 'FILE_PARSED_WITH_ERRORS'];
 const FailureEvents = ['UNABLE_TO_PARSE_FILE'];
 
-export const Events = [...Commands, ...Queries, ...SuccessEvents, ...FailureEvents];
+export const Messages = [...Commands, ...Queries, ...SuccessEvents, ...FailureEvents];
 
 //
 // Service and dependencies
@@ -21,7 +21,7 @@ export type Service = dt.Service;
 export type Dependencies = dt.Dependencies;
 
 //
-// Event Data Types
+// Message Data Types
 //
 export type FilePath = t.OutputOf<typeof dt.FilePath>;
 export type ParsedFile = t.OutputOf<typeof dt.ParsedFile>;

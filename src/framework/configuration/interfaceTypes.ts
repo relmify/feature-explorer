@@ -1,12 +1,12 @@
-import { EventBus } from '../eventBus';
+import { MessageBus } from '../messageBus';
 import { Service as WatcherService } from '../../domain/watcher';
 
-export type EventBusConfiguration = {
-  readonly eventBus: EventBus;
+export type MessageBusConfiguration = {
+  readonly messageBus: MessageBus;
 };
 
 export type ServicesConfiguration = {
   readonly watcherService: WatcherService;
 };
 
-export type ApplicationConfiguration = EventBusConfiguration & ServicesConfiguration;
+export type ApplicationConfiguration = MessageBusConfiguration & ServicesConfiguration;
