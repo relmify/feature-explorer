@@ -17,7 +17,7 @@ type ItemTypeBrand = { readonly ItemType: unique symbol };
 type FileItemTypeBrand = { readonly FileItemType: unique symbol };
 type FileItemIdBrand = { readonly FileItemId: unique symbol };
 type FileContentItemTypeBrand = { readonly FileContentItemType: unique symbol };
-type DirectorySearchPatternBrand = { readonly DirectorySearchPattern: unique symbol };
+type DirectorySearchPatternsBrand = { readonly DirectorySearchPatterns: unique symbol };
 
 //
 // Domain types
@@ -125,15 +125,15 @@ export type FileContentItem = t.TypeOf<typeof FileContentItem>;
 
 export type FeatureItem = FileItem | FileContentItem;
 
-export const DirectorySearchPattern = t.brand(
+export const DirectorySearchPatterns = t.brand(
   t.readonlyArray(t.string),
-  (pattern): pattern is t.Branded<ReadonlyArray<string>, DirectorySearchPatternBrand> =>
+  (pattern): pattern is t.Branded<ReadonlyArray<string>, DirectorySearchPatternsBrand> =>
     Array.isArray(pattern) &&
     pattern.length > 0 &&
     pattern.reduce((result, value) => (typeof value === 'string' ? result : false), true),
-  'DirectorySearchPattern',
+  'DirectorySearchPatterns',
 );
-export type DirectorySearchPattern = t.TypeOf<typeof DirectorySearchPattern>;
+export type DirectorySearchPatterns = t.TypeOf<typeof DirectorySearchPatterns>;
 
 //
 // Service and Dependencies

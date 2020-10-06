@@ -12,60 +12,94 @@ import * as it from './interfaceTypes';
 /* eslint-disable functional/no-conditional-statement */
 /* eslint-disable functional/no-throw-statement */
 
-export const errorsToContractViolation = (componentName: string, validationErrors: t.Errors): it.ContractViolation => {
-  const message = PathReporter.report(Either.left(validationErrors)).reduce((acc, cur) => acc + '\n' + cur, '');
-  return new it.ContractViolation(componentName, message);
-};
-
-const createMessageRegistry = (): dt.MessageTypeRegistry => {
-  return new BehaviorSubject<dt.RegisteredMessageTypes>([]);
-};
-
-export const createMessageBus = (errorHandler: it.ContractViolationHandler): it.MessageBus => {
+export const initializeMessageBus = (contractViolationHandler: dt.ContractViolationHandler): dt.MessageBus => {
   return {
-    messageChannel: new Subject(),
-    registry: createMessageRegistry(),
-    contractViolationHandler: errorHandler,
+    dependencies: {
+      contractViolationHandler: contractViolationHandler,
+    },
+    state: {
+      messageChannel: new Subject(),
+      messageRegistry: new BehaviorSubject<dt.RegisteredMessageTypes>([]),
+      handlerContextRegistry: new BehaviorSubject<dt.RegisteredHandlerContexts>([]),
+    },
   };
 };
 
+export const errorsToContractViolation = (componentName: string, validationErrors: t.Errors): dt.ContractViolation => {
+  const message = PathReporter.report(Either.left(validationErrors)).reduce((acc, cur) => acc + '\n' + cur, '');
+  return new dt.ContractViolation(componentName, message);
+};
+
 const isRegisteredMessageType = (messageBus: dt.MessageBus, name: dt.MessageType): boolean => {
-  return messageBus.registry.getValue().includes(name);
+  return messageBus.state.messageRegistry.value.includes(name);
 };
 
 const reportPublishUnregisteredViolation = (messageBus: dt.MessageBus, messageType: dt.MessageType): void => {
-  messageBus.contractViolationHandler(
-    new it.ContractViolation(dt.MessageBusServiceName, `Unable to publish unregistered message type ${messageType}`),
+  messageBus.dependencies.contractViolationHandler(
+    new dt.ContractViolation(dt.MessageBusServiceName, `Unable to publish unregistered message type ${messageType}`),
   );
 };
 
 const publishDomainMessage = (messageBus: dt.MessageBus) => (message: dt.Message): void => {
   return isRegisteredMessageType(messageBus, message.messageType)
-    ? messageBus.messageChannel.next(message)
+    ? messageBus.state.messageChannel.next(message)
     : reportPublishUnregisteredViolation(messageBus, message.messageType);
+};
+
+/**
+ * Returns a function that returns true if the supplied context entry includes the handler.
+ */
+const isHandlerContextEntry = (handler: it.MessageHandler) => (contextEntry: dt.ContextEntry): boolean => {
+  return contextEntry.handlers.includes(handler) ? true : false;
+};
+
+const findHandlerContextEntry = (
+  messageBus: dt.MessageBus,
+  handler: it.MessageHandler,
+): dt.ContextEntry | undefined => {
+  return dt.HandlerContextRegistry.get(messageBus).find(isHandlerContextEntry(handler));
+};
+
+const getHandlerContext = (messageBus: dt.MessageBus, handler: it.MessageHandler): unknown => {
+  const contextEntry = findHandlerContextEntry(messageBus, handler);
+  return contextEntry?.context;
+};
+
+const setHandlerContext = (messageBus: dt.MessageBus, handler: it.MessageHandler, context: unknown): void => {
+  const updatedContextRegistry = dt.HandlerContextRegistry.get(messageBus).map(contextEntry =>
+    isHandlerContextEntry(handler)(contextEntry) ? { ...contextEntry, context: context } : contextEntry,
+  );
+  dt.HandlerContextRegistry.set(updatedContextRegistry)(messageBus);
 };
 
 const handleMessage = (messageBus: dt.MessageBus, handlers: readonly it.MessageHandler[]) => (
   message: dt.Message,
 ): readonly it.Message[] => {
-  return handlers.flatMap(handler =>
-    Either.fold(
-      (violation: it.ContractViolation) => {
-        messageBus.contractViolationHandler(violation);
+  const encodedMessage = dt.Message.encode(message);
+
+  const messages: readonly it.Message[] = handlers.flatMap(handler => {
+    const context = getHandlerContext(messageBus, handler);
+    return Either.fold(
+      (violation: dt.ContractViolation) => {
+        messageBus.dependencies.contractViolationHandler(violation);
         return [];
       },
-      (messages: readonly it.Message[]) => messages,
-    )(handler(dt.Message.encode(message))),
-  );
+      (result: dt.HandlerResult) => {
+        setHandlerContext(messageBus, handler, result.context);
+        return result.messages;
+      },
+    )(handler(context, encodedMessage));
+  });
+  return messages;
 };
 
 const reportValidationErrors = (messageBus: dt.MessageBus, errors: t.Errors): void => {
-  messageBus.contractViolationHandler(errorsToContractViolation(dt.MessageBusServiceName, errors));
+  messageBus.dependencies.contractViolationHandler(errorsToContractViolation(dt.MessageBusServiceName, errors));
 };
 
 const reportAlreadyRegisteredViolation = (messageBus: dt.MessageBus, messageType: dt.MessageType): void => {
-  messageBus.contractViolationHandler(
-    new it.ContractViolation(dt.MessageBusServiceName, `Unable to register duplicate message type ${messageType}`),
+  messageBus.dependencies.contractViolationHandler(
+    new dt.ContractViolation(dt.MessageBusServiceName, `Unable to register duplicate message type ${messageType}`),
   );
 };
 
@@ -76,9 +110,9 @@ export const registerMessageTypes = (messageBus: it.MessageBus, messageTypes: re
     Either.fold(
       (errors: t.Errors) => reportValidationErrors(messageBus, errors),
       (messageType: dt.MessageType) =>
-        messageBus.registry.value.includes(messageType)
+        messageBus.state.messageRegistry.value.includes(messageType)
           ? reportAlreadyRegisteredViolation(messageBus, messageType)
-          : messageBus.registry.next([...messageBus.registry.value, messageType]),
+          : messageBus.state.messageRegistry.next([...messageBus.state.messageRegistry.value, messageType]),
     )(errorsOrType),
   );
 };
@@ -88,14 +122,14 @@ export const registerMessageType = (messageBus: it.MessageBus, messageType: it.M
 };
 
 export const getRegisteredMessageTypes = (messageBus: it.MessageBus): readonly it.MessageType[] => {
-  return messageBus.registry.getValue().map(registeredType => dt.MessageType.encode(registeredType));
+  return messageBus.state.messageRegistry.getValue().map(registeredType => dt.MessageType.encode(registeredType));
 };
 
 export const publishMessages = (messageBus: it.MessageBus, messagesToPublish: readonly it.Message[]): void => {
   messagesToPublish.map(message => {
     Either.fold(
       (errors: t.Errors) =>
-        messageBus.contractViolationHandler(errorsToContractViolation(dt.MessageBusServiceName, errors)),
+        messageBus.dependencies.contractViolationHandler(errorsToContractViolation(dt.MessageBusServiceName, errors)),
       (message: dt.Message) => publishDomainMessage(messageBus)(message),
     )(dt.Message.decode(message));
   });
@@ -106,8 +140,8 @@ export const publishMessage = (messageBus: it.MessageBus, message: it.Message): 
 };
 
 const reportSubscribeUnregisteredViolation = (messageBus: dt.MessageBus, messageType: dt.MessageType): void => {
-  messageBus.contractViolationHandler(
-    new it.ContractViolation(
+  messageBus.dependencies.contractViolationHandler(
+    new dt.ContractViolation(
       dt.MessageBusServiceName,
       `Unable to subscribe to unregistered message type ${messageType}`,
     ),
@@ -126,7 +160,7 @@ const subscribeHandlersToFilteredMessageChannel = (
   messageType: dt.MessageType,
   handlers: readonly it.MessageHandler[],
 ): void => {
-  messageBus.messageChannel
+  messageBus.state.messageChannel
     .pipe(filter((message: dt.Message) => message.messageType === messageType))
     .subscribe(handleDomainMessageAndPublishResults(messageBus, handlers));
 };

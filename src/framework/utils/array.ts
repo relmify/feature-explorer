@@ -12,8 +12,8 @@
 /**
  * Typescript doesn't provide a way to convert an immutable array to a mutable array.
  *
- * @param {Array} originalArray The array that needs to be converted to a mutable array
- * @returns {Array} A new mutable array
+ * @param originalArray The array that needs to be converted to a mutable array
+ * @returns A new mutable array
  */
 export const mutableArrayOf = <T>(originalArray: readonly T[] | T[]): T[] => {
   const newArray: T[] = originalArray.concat([]);

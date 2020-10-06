@@ -2,7 +2,7 @@ import { Message, MessageBus, ContractViolationHandler, MessageHandler } from '.
 import * as t from 'io-ts';
 import { right, isLeft } from 'fp-ts/lib/Either';
 import {
-  createMessageBus,
+  initializeMessageBus,
   registerMessageType,
   registerMessageTypes,
   getRegisteredMessageTypes,
@@ -16,12 +16,12 @@ import {
 let messageBus: MessageBus;
 let contractViolationHandler: ContractViolationHandler;
 
-describe('createMessageBus()', () => {
+describe('initializeMessageBus()', () => {
   test('should return a message bus with a message channel and a message registry', () => {
     const contractViolationHandler: ContractViolationHandler = jest.fn();
-    const messageBus = createMessageBus(contractViolationHandler);
-    expect(messageBus.messageChannel).not.toEqual(undefined);
-    expect(messageBus.registry).not.toEqual(undefined);
+    const messageBus = initializeMessageBus(contractViolationHandler);
+    expect(messageBus.state.messageChannel).not.toEqual(undefined);
+    expect(messageBus.state.messageRegistry).not.toEqual(undefined);
   });
 });
 
@@ -30,7 +30,7 @@ describe('registerMessageType()', () => {
 
   beforeEach(() => {
     contractViolationHandler = jest.fn();
-    messageBus = createMessageBus(contractViolationHandler);
+    messageBus = initializeMessageBus(contractViolationHandler);
   });
 
   test('should successfully register a new valid message type', () => {
@@ -66,7 +66,7 @@ describe('RegisterMessageTypes()', () => {
 
   beforeEach(() => {
     contractViolationHandler = jest.fn();
-    messageBus = createMessageBus(contractViolationHandler);
+    messageBus = initializeMessageBus(contractViolationHandler);
   });
 
   test('should successfully register multiple message types', () => {
@@ -96,7 +96,7 @@ describe('getRegisteredMessageTypes()', () => {
 
   beforeEach(() => {
     contractViolationHandler = jest.fn();
-    messageBus = createMessageBus(contractViolationHandler);
+    messageBus = initializeMessageBus(contractViolationHandler);
   });
 
   test('should return an empty list when no message types are registered', () => {
@@ -123,7 +123,7 @@ describe('subscribeHandlerToMessageType()', () => {
   beforeEach(() => {
     contractViolationHandler = jest.fn();
     messageHandler = jest.fn();
-    messageBus = createMessageBus(contractViolationHandler);
+    messageBus = initializeMessageBus(contractViolationHandler);
     registerMessageType(messageBus, messageType);
   });
 
@@ -154,7 +154,7 @@ describe('subscribeHandlersToMessageType()', () => {
     contractViolationHandler = jest.fn();
     messageHandlerOne = jest.fn();
     messageHandlerTwo = jest.fn();
-    messageBus = createMessageBus(contractViolationHandler);
+    messageBus = initializeMessageBus(contractViolationHandler);
   });
 
   test('should successfully subscribe handlers to a registered message type', () => {
@@ -185,16 +185,16 @@ describe('publishMessage()', () => {
 
   beforeEach(() => {
     contractViolationHandler = jest.fn();
-    messageHandlerOne = jest.fn(() => right([]));
-    messageHandlerTwo = jest.fn(() => right([]));
-    messageBus = createMessageBus(contractViolationHandler);
+    messageHandlerOne = jest.fn(() => right({ context: {}, messages: [] }));
+    messageHandlerTwo = jest.fn(() => right({ context: {}, messages: [] }));
+    messageBus = initializeMessageBus(contractViolationHandler);
   });
 
   test('should successfully publish to a single subscriber', () => {
     registerMessageType(messageBus, messageType);
     subscribeHandlerToMessageType(messageBus, messageType, messageHandlerOne);
     publishMessage(messageBus, message);
-    expect(messageHandlerOne).toHaveBeenCalledWith({ messageType: messageType, data: 'data' });
+    expect(messageHandlerOne).toHaveBeenCalledWith(undefined, { messageType: messageType, data: 'data' });
     expect(messageHandlerOne).toHaveBeenCalledTimes(1);
   });
 
@@ -235,9 +235,9 @@ describe('publishMessages()', () => {
 
   beforeEach(() => {
     contractViolationHandler = jest.fn();
-    messageHandlerOne = jest.fn(() => right([]));
-    messageHandlerTwo = jest.fn(() => right([]));
-    messageBus = createMessageBus(contractViolationHandler);
+    messageHandlerOne = jest.fn(() => right({ context: {}, messages: [] }));
+    messageHandlerTwo = jest.fn(() => right({ context: {}, messages: [] }));
+    messageBus = initializeMessageBus(contractViolationHandler);
   });
 
   test('should successfully publish multiple messages', () => {

@@ -1,8 +1,6 @@
 import * as vscode from 'vscode';
-import { configureApplication } from './framework/configuration';
-import { SummaryItem } from './presentation/featureTreeDataProvider';
-import { createFeatureTree } from './presentation/featureTreeDataProvider/FeatureTree';
-import { SummaryTreeDataProvider } from './presentation/featureTreeDataProvider/FeatureTreeDataProvider';
+import { configureApplication, initializeApplication } from './framework/configuration';
+import { FeatureSummaryItem, FeatureTreeDataProvider } from './presentation/featureTreeDataProvider';
 
 /* eslint-disable functional/no-return-void */
 /* eslint-disable functional/functional-parameters */
@@ -22,12 +20,12 @@ const getWorkspaceRoot = (): string => {
 export function activate(context: vscode.ExtensionContext): void {
   console.log('The "feature-explorer" extension has been activated');
 
-  configureApplication();
+  configureApplication(initializeApplication());
   const workspaceRoot = getWorkspaceRoot();
   const featureTree = createFeatureTree(workspaceRoot);
-  const featureTreeDataProvider = new SummaryTreeDataProvider(
+  const featureTreeDataProvider = new FeatureTreeDataProvider(
     vscode.Uri.parse,
-    new vscode.EventEmitter<SummaryItem | undefined>(),
+    new vscode.EventEmitter<FeatureSummaryItem | undefined>(),
     featureTree,
   );
   const viewSubscription = vscode.window.registerTreeDataProvider('featureExplorer.view', featureTreeDataProvider);

@@ -8,19 +8,39 @@ import * as watcher from '../../domain/watcher';
 /* eslint-disable functional/no-conditional-statement */
 
 //
-// Initialize Message Bus Step
+// Initialize Framework
 //
 
-const errorHandler: mb.ContractViolationHandler = (error: Error) => {
+export const contractViolationHandler: mb.ContractViolationHandler = (error: Error) => {
   console.log(error.message);
 };
 
-export const messagesConfiguration: dt.Messagesconfiguration = {
+export const initializeFramework = (contractViolationHandler: mb.ContractViolationHandler): it.Framework => {
+  return {
+    messageBus: mb.initializeMessageBus(contractViolationHandler),
+  };
+};
+
+//
+// Initialize Domain
+//
+
+export const initializeDomain = (framework: it.Framework): it.Domain => {
+  return {
+    watcher: watcher.initializeWatcher(framework.messageBus),
+  };
+};
+
+//
+// Configure Framework
+//
+
+export const messagesConfiguration: dt.MessagesConfiguration = {
   allMessageTypes: [...watcher.getMessageTypes()],
   allGetMessageHandlersFunctions: [watcher.getMessageHandlers],
 };
 
-const subscribeToMessages = (messageBus: mb.MessageBus, configuration: dt.Messagesconfiguration): void => {
+const subscribeToMessages = (messageBus: mb.MessageBus, configuration: dt.MessagesConfiguration): void => {
   const registeredMessageTypes = mb.getRegisteredMessageTypes(messageBus);
   registeredMessageTypes.map((messageType: mb.MessageType) => {
     const messageHandlers = configuration.allGetMessageHandlersFunctions
@@ -32,19 +52,25 @@ const subscribeToMessages = (messageBus: mb.MessageBus, configuration: dt.Messag
   });
 };
 
-export const initializeMessageBus = (configuration: dt.Messagesconfiguration): it.MessageBusConfiguration => {
-  const messageBus = mb.createMessageBus(errorHandler);
+const configureMessageBus = (messageBus: mb.MessageBus, configuration: dt.MessagesConfiguration): it.Framework => {
   mb.registerMessageTypes(messageBus, configuration.allMessageTypes);
   subscribeToMessages(messageBus, configuration);
   return { messageBus: messageBus };
 };
 
-//
-// Initialize Services Step
-//
-
-export const initializeServices = (messageBus: mb.MessageBus): it.ServicesConfiguration => {
+export const configureFramework = (
+  framework: it.Framework,
+  messagesConfiguration: dt.MessagesConfiguration,
+): it.Framework => {
   return {
-    watcherService: watcher.initializeService({ messageBus: messageBus }),
+    messageBus: configureMessageBus(framework.messageBus, messagesConfiguration),
+    ...framework,
   };
+};
+
+//
+// Configure Domain
+//
+export const configureDomain = (domain: it.Domain): it.Domain => {
+  return domain;
 };

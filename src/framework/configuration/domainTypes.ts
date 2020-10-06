@@ -1,7 +1,7 @@
 import { MessageType, GetHandlers } from '../messageBus';
 import { ServiceName } from '../messageBus/domainTypes';
 
-export type Messagesconfiguration = {
+export type MessagesConfiguration = {
   readonly allMessageTypes: readonly MessageType[];
   readonly allGetMessageHandlersFunctions: readonly GetHandlers[];
 };

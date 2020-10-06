@@ -69,6 +69,7 @@
     "test:feature": "cucumber-js  -p default --format summary"
   },
   "devDependencies": {
+    "@relmify/jest-fp-ts": "^1.1.1",
     "@types/glob": "^7.1.1",
     "@types/jest": "^25.2.1",
     "@types/node": "^13.11.1",

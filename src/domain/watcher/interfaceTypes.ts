@@ -26,9 +26,9 @@ const FailureEvents = ['UNABLE_TO_START_FILE_WATCH', 'UNABLE_TO_STOP_FILE_WATCH'
 export const Messages = [...Commands, ...Queries, ...SuccessEvents, ...FailureEvents];
 
 //
-// Service and dependencies
+// Service state and dependencies
 //
-export type Service = dt.Service;
+export type ServiceState = dt.State;
 export type Dependencies = dt.Dependencies;
 
 //
@@ -102,3 +102,8 @@ export class WatcherContractViolation extends ContractViolation {
     super(ServiceName, message);
   }
 }
+
+/**
+ * Watches feature files and directories for changes
+ */
+export type Watcher = dt.Watcher;

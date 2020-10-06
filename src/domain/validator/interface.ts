@@ -1,4 +1,4 @@
-import { Message, MessageType, MessageHandler, ContractViolation } from '../../framework/messageBus';
+import { Message, MessageType, MessageHandler, ContractViolation, HandlerResult } from '../../framework/messageBus';
 import { Either, left } from 'fp-ts/lib/Either';
 import * as dt from './domainTypes';
 import * as it from './interfaceTypes';
@@ -8,8 +8,9 @@ import * as it from './interfaceTypes';
 //
 
 export const validateFileHandler: MessageHandler = (
+  context: unknown,
   message: Message,
-): Either<ContractViolation, readonly Message[]> => {
+): Either<ContractViolation, HandlerResult> => {
   return left(new it.ValidatorContractViolation('Validate file command not implemented'));
 };
 

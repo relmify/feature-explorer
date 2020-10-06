@@ -1,27 +1,34 @@
-import { Message, MessageHandler, MessageType, ContractViolation } from '../../framework/messageBus';
+import { Message, MessageHandler, MessageType, ContractViolation, HandlerResult } from '../../framework/messageBus';
 import { Either, left } from 'fp-ts/lib/Either';
 import * as it from './interfaceTypes';
-import * as dt from './domainTypes';
+import * as d from './domain';
 
 //
 // Command Handlers
 //
 
 export const startFileWatchHandler: MessageHandler = (
+  context: unknown,
   message: Message,
-): Either<ContractViolation, readonly Message[]> => {
+): Either<ContractViolation, HandlerResult> => {
   return left(new it.WatcherContractViolation('Start file watcher command not implemented'));
 };
 
 export const stopFileWatchHandler: MessageHandler = (
+  context: unknown,
   message: Message,
-): Either<ContractViolation, readonly Message[]> => {
+): Either<ContractViolation, HandlerResult> => {
   return left(new it.WatcherContractViolation('Stop file watcher command not implemented'));
 };
 
 //
 // Interface Functions
 //
+
+/**
+ * Initialize Watcher
+ */
+export const initializeWatcher = d.initializeWatcher;
 
 /**
  * Get the message handlers for all of the messages that are subscribed to by this service.
@@ -40,15 +47,4 @@ export const getMessageHandlers = (messageType: MessageType): readonly MessageHa
 // eslint-disable-next-line functional/functional-parameters
 export const getMessageTypes = (): readonly MessageType[] => {
   return it.Messages.map(localName => it.ServiceName + '.' + localName);
-};
-
-/**
- * Initialize service dependencies
- */
-export const initializeService = (dependencies: it.Dependencies): it.Service => {
-  // eslint-disable-next-line functional/no-expression-statement
-  dt.Service.next({
-    dependencies: dependencies,
-  });
-  return dt.Service;
 };

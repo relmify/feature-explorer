@@ -1,4 +1,4 @@
-import { Message, MessageHandler, MessageType, ContractViolation } from '../../framework/messageBus';
+import { Message, MessageHandler, MessageType, ContractViolation, HandlerResult } from '../../framework/messageBus';
 import { Either, left } from 'fp-ts/lib/Either';
 import * as dt from './domainTypes';
 import * as it from './interfaceTypes';
@@ -7,7 +7,10 @@ import * as it from './interfaceTypes';
 // Command Handlers
 //
 
-export const parseFileHandler: MessageHandler = (message: Message): Either<ContractViolation, readonly Message[]> => {
+export const parseFileHandler: MessageHandler = (
+  context: unknown,
+  message: Message,
+): Either<ContractViolation, HandlerResult> => {
   return left(new it.ParserContractViolation('Parse file command not implemented'));
 };
 

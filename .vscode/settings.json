@@ -14,5 +14,6 @@
   "typescript.tsc.autoDetect": "on",
   "editor.tabSize": 2,
   "jestrunner.jestCommand": "npm run jest --",
-  "prettier.printWidth": 120
+  "prettier.printWidth": 120,
+  "rewrap.doubleSentenceSpacing": true
 }

@@ -2,12 +2,12 @@
  * Message Bus public types
  * @packageDocumentation
  */
-import { Either } from 'fp-ts/lib/Either';
+
 import * as t from 'io-ts';
 import * as dt from './domainTypes';
 
 /**
- * Allows services to publish and subdscribe to messages
+ * Allows services to publish and subscribe to messages
  */
 export type MessageBus = dt.MessageBus;
 
@@ -40,58 +40,19 @@ export type MessageType = t.OutputOf<typeof dt.MessageType>;
  */
 export type MessageData = t.OutputOf<typeof dt.MessageData>;
 
-/* eslint-disable functional/no-class */
-/* eslint-disable functional/no-expression-statement */
-/* eslint-disable functional/no-this-expression */
+/**
+ * A new context (state) together with zero or more new messages to be published.
+ */
+export type HandlerResult = dt.HandlerResult;
 
 /**
- * A ContractViolation is a custom error type that represents a contract violation between system components
- * such as:
+ * A Message Handler is a function that gets called when a message that you subscribe to is published.
  *
- * - between the user interface and a back-end service
- * - between two services
- * - between a service and a framework component
- * - between a service and an external dependency
- *
- * A ContractViolation normally indicates that a code or configuration change is required - by the supplier,
- * the consumer, or both - either to comply with the contract or to select a different implementation that
- * provides the desired contract.
- *
- * @param componentName the name of the component that detected the contract error.
- * @param message a string to display describing the contract violation.
+ * @param context The current state
+ * @param message The message to be handled
+ * @returns Either a Contract Violation or a new context together with zero or more new messages to be published.
  */
-export class ContractViolation extends Error {
-  constructor(componentName: string, message: string) {
-    const errorName = `${componentName}_Contract_Violation`;
-    super(errorName + ': ' + message);
-    this.name = errorName;
-  }
-}
-
-/* eslint-enable functional/no-class */
-/* eslint-enable functional/no-expression-statement */
-/* eslint-enable functional/no-this-expression */
-
-/**
- * A ContractViolation error handler function that is registered during message bus creation.
- *
- * The contract violation handler is called when:
- *
- * - A message handler throws a contract violation error because it received an invalid message type or invalid
- *   message data.
- * - A message handler throws a contract violation error because it detected a contract violation in one of its
- *   dependencies.
- * - An message handler violates the message bus contract by returning one or more invalid or unregistered messages,
- *   or by throwing an error that is not a contract violation.
- */
-// eslint-disable-next-line functional/no-return-void
-export type ContractViolationHandler = (violation: ContractViolation) => void;
-
-/**
- * A Message Handler is a function that gets called when a message that you subscribe to arrives. Any messages
- * returned by a Message Handler will be published by the MessageBus.
- */
-export type MessageHandler = (message: Message) => Either<ContractViolation, readonly Message[]>;
+export type MessageHandler = dt.MessageHandler;
 
 /**
  * A function that returns zero or more message handler functions for a particular message type.
@@ -110,3 +71,18 @@ export type GetHandlers = (MessageType: MessageType) => readonly MessageHandler[
  * messages on behalf of all of the servies.
  */
 export type GetMessageTypes = () => readonly MessageType[];
+
+/**
+ * A ContractViolation error handler function that is registered during message bus creation.
+ *
+ * The contract violation handler is called when:
+ *
+ * - A message handler throws a contract violation error because it received an invalid message type or invalid
+ *   message data.
+ * - A message handler throws a contract violation error because it detected a contract violation in one of its
+ *   dependencies.
+ * - An message handler violates the message bus contract by returning one or more invalid or unregistered messages,
+ *   or by throwing an error that is not a contract violation.
+ */
+// eslint-disable-next-line functional/no-return-void
+export type ContractViolationHandler = dt.ContractViolationHandler;

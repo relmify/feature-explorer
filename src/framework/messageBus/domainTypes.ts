@@ -3,8 +3,9 @@
  * @packageDocumenation
  */
 import * as t from 'io-ts';
+import { Either } from 'fp-ts/lib/Either';
+import { Lens } from 'monocle-ts';
 import { Subject, BehaviorSubject } from 'rxjs';
-import { ContractViolationHandler } from './interfaceTypes';
 
 //
 // Service name
@@ -26,6 +27,20 @@ const MessageTypeRegExp = RegExp(
 type ServiceNameBrand = { readonly ServiceName: unique symbol };
 type LocalMessageTypeBrand = { readonly LocalMessageType: unique symbol };
 type MessageTypeBrand = { readonly MessageType: unique symbol };
+
+/* eslint-disable functional/no-class */
+/* eslint-disable functional/no-expression-statement */
+/* eslint-disable functional/no-this-expression */
+export class ContractViolation extends Error {
+  constructor(componentName: string, message: string) {
+    const errorName = `${componentName}_Contract_Violation`;
+    super(errorName + ': ' + message);
+    this.name = errorName;
+  }
+}
+/* eslint-enable functional/no-class */
+/* eslint-enable functional/no-expression-statement */
+/* eslint-enable functional/no-this-expression */
 
 /**
  * A ServiceName is a non-empty string that consists of 1 or more segments. Each segment must start with a
@@ -91,16 +106,68 @@ export type RegisteredMessageTypes = readonly MessageType[];
  */
 export type MessageTypeRegistry = BehaviorSubject<RegisteredMessageTypes>;
 
+export type EncodedMessage = t.OutputOf<typeof Message>;
+
+/**
+ * Handlers return messages to be published, along with a (possibly updated) context
+ * (state). Handlers are always called with the latest context (state) for a particular
+ * service or component.
+ */
+export type HandlerResult = {
+  readonly context: unknown;
+  readonly messages: readonly EncodedMessage[];
+};
+
+/**
+ * Message handlers are provided with a message context (state) as well as the message
+ * itself.
+ */
+export type MessageHandler = (context: unknown, message: EncodedMessage) => Either<ContractViolation, HandlerResult>;
+
+/**
+ * Every service/component that registers with the message bus has a single context
+ * entry that stores the context as well as the handlers associated with that service
+ * or component.
+ */
+export type ContextEntry = {
+  readonly context: unknown;
+  readonly handlers: readonly MessageHandler[];
+};
+
+export type RegisteredHandlerContexts = readonly ContextEntry[];
+export type HandlerContextRegistry = BehaviorSubject<RegisteredHandlerContexts>;
+
 /**
  * The medium over which messages are published.
  */
 export type MessageChannel = Subject<Message>;
 
-/**
- * Packages together the message channel, the message type registry, and the contract violation handler.
- */
-export type MessageBus = {
-  readonly messageChannel: MessageChannel;
-  readonly registry: MessageTypeRegistry;
+type Dependencies = {
   readonly contractViolationHandler: ContractViolationHandler;
 };
+
+/**
+ * Message Bus State
+ */
+type State = {
+  readonly messageChannel: MessageChannel;
+  readonly messageRegistry: MessageTypeRegistry;
+  readonly handlerContextRegistry: HandlerContextRegistry;
+};
+
+/**
+ * Combines the configuration (dependencies) with the current state
+ */
+export type MessageBus = {
+  readonly dependencies: Dependencies;
+  readonly state: State;
+};
+
+// eslint-disable-next-line functional/no-return-void
+export type ContractViolationHandler = (violation: ContractViolation) => void;
+
+//
+// MessageBus Lenses
+//
+export const MessageRegistry = Lens.fromPath<MessageBus>()(['state', 'messageRegistry', 'value']);
+export const HandlerContextRegistry = Lens.fromPath<MessageBus>()(['state', 'handlerContextRegistry', 'value']);
